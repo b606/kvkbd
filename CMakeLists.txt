@@ -3,7 +3,7 @@ cmake_policy(SET CMP0063 NEW)
 
 project(kvkbd)
 
-option(ENABLE_QT6 "Compile with Qt6" OFF)
+option(ENABLE_QT6 "Compile with Qt6" ON)
 
 if(ENABLE_QT6)
     set(QT_VERSION 6)
