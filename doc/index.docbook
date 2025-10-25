@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/docbookx.dtd" [
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
   <!ENTITY kvkbd "<application>Kvkbd</application>">
   <!ENTITY kappname "&kvkbd;">
   <!ENTITY package "kde-module">
