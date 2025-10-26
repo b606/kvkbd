@@ -1,5 +1,6 @@
 set(kvkbd_SRCS vkeyboard.cpp
     x11keyboard.cpp
+    kbdlayout.cpp
     dragwidget.cpp
     mainwidget.cpp
     vbutton.cpp
