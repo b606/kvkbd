@@ -45,7 +45,7 @@ X11Keyboard::X11Keyboard(QObject *parent): VKeyboard(parent)
 
     QDBusConnection session = QDBusConnection::sessionBus();
 
-    session.connect(service, path, interface, QLatin1String("currentLayoutChanged"), this, SLOT(layoutChanged()));
+    session.connect(service, path, interface, QLatin1String("layoutChanged"), this, SLOT(layoutChanged()));
     session.connect(service, path, interface, QLatin1String("layoutListChanged"), this, SLOT(constructLayouts()));
 
     constructLayouts();
@@ -173,14 +173,10 @@ void X11Keyboard::layoutChanged()
 
     QDBusInterface iface(QLatin1String("org.kde.keyboard"), QLatin1String("/Layouts"), QLatin1String("org.kde.KeyboardLayouts"), QDBusConnection::sessionBus());
 
-    QDBusReply<QString> reply = iface.call(QLatin1String("getCurrentLayout"));
+    QDBusReply<uint> reply = iface.call(QLatin1String("getLayout"));
 
     if (reply.isValid()) {
-
-        QString current_layout = reply.value();
-
-        layout_index = layouts.indexOf(current_layout);
-
+        layout_index = (int) reply.value();
         Q_EMIT layoutUpdated(layout_index, layouts.at(layout_index));
     } else {
         layout_index = 0;
