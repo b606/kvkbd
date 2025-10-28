@@ -37,8 +37,11 @@
 #include "vbutton.h"
 extern QList<VButton *> modKeys;
 
+#include "kbdlayout.h"
+
 X11Keyboard::X11Keyboard(QObject *parent): VKeyboard(parent)
 {
+    KbdLayout::registerMetaType();
     QString service = QLatin1String("");
     QString path = QLatin1String("/Layouts");
     QString interface = QLatin1String("org.kde.KeyboardLayouts");
@@ -73,16 +76,16 @@ void X11Keyboard::constructLayouts()
 {
     QDBusInterface iface(QLatin1String("org.kde.keyboard"), QLatin1String("/Layouts"), QLatin1String("org.kde.KeyboardLayouts"), QDBusConnection::sessionBus());
 
-    QDBusReply<QStringList> reply = iface.call(QLatin1String("getLayoutsList"));
+    QDBusReply<QList<KbdLayout>> reply = iface.call(QLatin1String("getLayoutsList"));
     if (reply.isValid()) {
 
-        QStringList lst = reply.value();
+        QList<KbdLayout> lst = reply.value();
         layouts.clear();
 
-        QListIterator<QString> itr(lst);
+        QListIterator<KbdLayout> itr(lst);
 
         while (itr.hasNext()) {
-            QString layout_name = itr.next();
+            QString layout_name = itr.next().shortName();
             layouts << layout_name;
         }
     }
