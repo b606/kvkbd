@@ -9,7 +9,7 @@
       <item name="BackSlash" width="35"/>
       <item name="CapsLock" width="50"/>
       <item name="Enter" width="55"/>
-      <item name="LeftShift" width="60"/>
+      <item name="LeftShift" width="35"/>
       <item name="RightShift" width="70"/>
       <item name="LCtrl" width="35"/>
       <item name="LMeta" width="25"/>
@@ -114,6 +114,7 @@
 
       <row>
         <key code="50" width="LeftShift" label="&#x290a;" action="shiftText" modifier="1" />
+        <key code="94"/>
         <key code="52"/>
         <key code="53"/>
         <key code="54"/>
