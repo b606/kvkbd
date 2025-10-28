@@ -22,7 +22,7 @@
 #define X11KEYBOARD_H
 
 #include "keysymconvert.h"
-#include <KF5/KWindowSystem/fixx11h.h>
+#include <fixx11h.h>
 
 #include "vkeyboard.h"
 
