@@ -80,7 +80,7 @@
       </row>
 
       <row>
-        <key code="23" width="Tab" label="Tab"/>
+        <key code="23" width="Tab" label="&#8633;"/>
         <key code="24"/>
         <key code="25"/>
         <key code="26"/>
