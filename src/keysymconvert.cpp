@@ -826,6 +826,13 @@ long KeySymConvert::convert(KeySym keysym)
     int max = sizeof(keysymtab) / sizeof(struct codepair) - 1;
     int mid;
 
+    /* need a button text and return normal instead of combining char.
+     * { 0xfe52, 0x0302 }: circumflex ^ COMBINING CIRCUMFLEX ACCENT
+     * { 0xfe57, 0x20ac }: diaeresis " COMBINING DIAERESIS
+     */
+    if (keysym == 0xfe52) return 0x005e; /* ^ CIRCUMFLEX ACCENT */
+    if (keysym == 0xfe57) return 0x00a8; /* ¨ DIAERESIS */
+
     /* first check for Latin-1 characters (1:1 mapping) */
     if ((keysym >= 0x0020 && keysym <= 0x007e) ||
             (keysym >= 0x00a0 && keysym <= 0x00ff))
