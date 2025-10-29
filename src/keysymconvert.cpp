@@ -36,6 +36,8 @@
 
 #include "keysymconvert.h"
 
+#define NO_KEYSYM_UNICODE_CONVERSION 0
+
 struct codepair {
     unsigned short keysym;
     unsigned short ucs;
@@ -278,6 +280,7 @@ struct codepair {
     { 0x06aa, 0x045a }, /*                Cyrillic_nje њ CYRILLIC SMALL LETTER NJE */
     { 0x06ab, 0x045b }, /*                Serbian_tshe ћ CYRILLIC SMALL LETTER TSHE */
     { 0x06ac, 0x045c }, /*               Macedonia_kje ќ CYRILLIC SMALL LETTER KJE */
+    { 0x06ad, 0x0491 }, /*   Ukrainian_ghe_with_upturn ґ CYRILLIC SMALL LETTER GHE WITH UPTURN */
     { 0x06ae, 0x045e }, /*         Byelorussian_shortu ў CYRILLIC SMALL LETTER SHORT U */
     { 0x06af, 0x045f }, /*               Cyrillic_dzhe џ CYRILLIC SMALL LETTER DZHE */
     { 0x06b0, 0x2116 }, /*                  numerosign № NUMERO SIGN */
@@ -293,6 +296,7 @@ struct codepair {
     { 0x06ba, 0x040a }, /*                Cyrillic_NJE Њ CYRILLIC CAPITAL LETTER NJE */
     { 0x06bb, 0x040b }, /*                Serbian_TSHE Ћ CYRILLIC CAPITAL LETTER TSHE */
     { 0x06bc, 0x040c }, /*               Macedonia_KJE Ќ CYRILLIC CAPITAL LETTER KJE */
+    { 0x06bd, 0x0490 }, /*   Ukrainian_GHE_WITH_UPTURN Ґ CYRILLIC CAPITAL LETTER GHE WITH UPTURN */
     { 0x06be, 0x040e }, /*         Byelorussian_SHORTU Ў CYRILLIC CAPITAL LETTER SHORT U */
     { 0x06bf, 0x040f }, /*               Cyrillic_DZHE Џ CYRILLIC CAPITAL LETTER DZHE */
     { 0x06c0, 0x044e }, /*                 Cyrillic_yu ю CYRILLIC SMALL LETTER YU */
@@ -446,13 +450,13 @@ struct codepair {
     { 0x08ae, 0x23a0 }, /*              botrightparens ⎠ ??? */
     { 0x08af, 0x23a8 }, /*        leftmiddlecurlybrace ⎨ ??? */
     { 0x08b0, 0x23ac }, /*       rightmiddlecurlybrace ⎬ ??? */
-    /*  0x08b1                          topleftsummation ? ??? */
-    /*  0x08b2                          botleftsummation ? ??? */
-    /*  0x08b3                 topvertsummationconnector ? ??? */
-    /*  0x08b4                 botvertsummationconnector ? ??? */
-    /*  0x08b5                         toprightsummation ? ??? */
-    /*  0x08b6                         botrightsummation ? ??? */
-    /*  0x08b7                      rightmiddlesummation ? ??? */
+    /*  0x08b1                        topleftsummation ? ??? */
+    /*  0x08b2                        botleftsummation ? ??? */
+    /*  0x08b3               topvertsummationconnector ? ??? */
+    /*  0x08b4               botvertsummationconnector ? ??? */
+    /*  0x08b5                       toprightsummation ? ??? */
+    /*  0x08b6                       botrightsummation ? ??? */
+    /*  0x08b7                    rightmiddlesummation ? ??? */
     { 0x08bc, 0x2264 }, /*               lessthanequal ≤ LESS-THAN OR EQUAL TO */
     { 0x08bd, 0x2260 }, /*                    notequal ≠ NOT EQUAL TO */
     { 0x08be, 0x2265 }, /*            greaterthanequal ≥ GREATER-THAN OR EQUAL TO */
@@ -479,7 +483,7 @@ struct codepair {
     { 0x08fc, 0x2191 }, /*                     uparrow ↑ UPWARDS ARROW */
     { 0x08fd, 0x2192 }, /*                  rightarrow → RIGHTWARDS ARROW */
     { 0x08fe, 0x2193 }, /*                   downarrow ↓ DOWNWARDS ARROW */
-    /*  0x09df                                     blank ? ??? */
+    /*  0x09df                                   blank ? ??? */
     { 0x09e0, 0x25c6 }, /*                soliddiamond ◆ BLACK DIAMOND */
     { 0x09e1, 0x2592 }, /*                checkerboard ▒ MEDIUM SHADE */
     { 0x09e2, 0x2409 }, /*                          ht ␉ SYMBOL FOR HORIZONTAL TABULATION */
@@ -513,7 +517,7 @@ struct codepair {
     { 0x0aa8, 0x200a }, /*                   hairspace   HAIR SPACE */
     { 0x0aa9, 0x2014 }, /*                      emdash — EM DASH */
     { 0x0aaa, 0x2013 }, /*                      endash – EN DASH */
-    /*  0x0aac                               signifblank ? ??? */
+    { 0x0aac, 0x2423 }, /*                 signifblank ␣ OPEN BOX */
     { 0x0aae, 0x2026 }, /*                    ellipsis … HORIZONTAL ELLIPSIS */
     { 0x0aaf, 0x2025 }, /*             doubbaselinedot ‥ TWO DOT LEADER */
     { 0x0ab0, 0x2153 }, /*                    onethird ⅓ VULGAR FRACTION ONE THIRD */
@@ -526,17 +530,17 @@ struct codepair {
     { 0x0ab7, 0x215a }, /*                  fivesixths ⅚ VULGAR FRACTION FIVE SIXTHS */
     { 0x0ab8, 0x2105 }, /*                      careof ℅ CARE OF */
     { 0x0abb, 0x2012 }, /*                     figdash ‒ FIGURE DASH */
-    { 0x0abc, 0x2329 }, /*            leftanglebracket 〈 LEFT-POINTING ANGLE BRACKET */
-    /*  0x0abd                              decimalpoint ? ??? */
-    { 0x0abe, 0x232a }, /*           rightanglebracket 〉 RIGHT-POINTING ANGLE BRACKET */
-    /*  0x0abf                                    marker ? ??? */
+    { 0x0abc, 0x27e8 }, /*            leftanglebracket ⟨ MATHEMATICAL LEFT ANGLE BRACKET */
+    { 0x0abd, 0x002e }, /*                decimalpoint . FULL STOP */
+    { 0x0abe, 0x27e9 }, /*           rightanglebracket ⟩ MATHEMATICAL RIGHT ANGLE BRACKET */
+    /*  0x0abf                                  marker ? ??? */
     { 0x0ac3, 0x215b }, /*                   oneeighth ⅛ VULGAR FRACTION ONE EIGHTH */
     { 0x0ac4, 0x215c }, /*                threeeighths ⅜ VULGAR FRACTION THREE EIGHTHS */
     { 0x0ac5, 0x215d }, /*                 fiveeighths ⅝ VULGAR FRACTION FIVE EIGHTHS */
     { 0x0ac6, 0x215e }, /*                seveneighths ⅞ VULGAR FRACTION SEVEN EIGHTHS */
     { 0x0ac9, 0x2122 }, /*                   trademark ™ TRADE MARK SIGN */
     { 0x0aca, 0x2613 }, /*               signaturemark ☓ SALTIRE */
-    /*  0x0acb                         trademarkincircle ? ??? */
+    /* { 0x0acb, 0x00AE },           trademarkincircle ® REGISTERED SIGN */
     { 0x0acc, 0x25c1 }, /*            leftopentriangle ◁ WHITE LEFT-POINTING TRIANGLE */
     { 0x0acd, 0x25b7 }, /*           rightopentriangle ▷ WHITE RIGHT-POINTING TRIANGLE */
     { 0x0ace, 0x25cb }, /*                emopencircle ○ WHITE CIRCLE */
@@ -546,10 +550,11 @@ struct codepair {
     { 0x0ad2, 0x201c }, /*         leftdoublequotemark “ LEFT DOUBLE QUOTATION MARK */
     { 0x0ad3, 0x201d }, /*        rightdoublequotemark ” RIGHT DOUBLE QUOTATION MARK */
     { 0x0ad4, 0x211e }, /*                prescription ℞ PRESCRIPTION TAKE */
+    { 0x0ad5, 0x2030 }, /*                    permille ‰ PER MILLE SIGN */
     { 0x0ad6, 0x2032 }, /*                     minutes ′ PRIME */
     { 0x0ad7, 0x2033 }, /*                     seconds ″ DOUBLE PRIME */
     { 0x0ad9, 0x271d }, /*                  latincross ✝ LATIN CROSS */
-    /*  0x0ada                                  hexagram ? ??? */
+    /*  0x0ada                                hexagram ䷀ ??? */
     { 0x0adb, 0x25ac }, /*            filledrectbullet ▬ BLACK RECTANGLE */
     { 0x0adc, 0x25c0 }, /*         filledlefttribullet ◀ BLACK LEFT-POINTING TRIANGLE */
     { 0x0add, 0x25b6 }, /*        filledrighttribullet ▶ BLACK RIGHT-POINTING TRIANGLE */
@@ -585,26 +590,26 @@ struct codepair {
     { 0x0afc, 0x2038 }, /*                       caret ‸ CARET */
     { 0x0afd, 0x201a }, /*          singlelowquotemark ‚ SINGLE LOW-9 QUOTATION MARK */
     { 0x0afe, 0x201e }, /*          doublelowquotemark „ DOUBLE LOW-9 QUOTATION MARK */
-    /*  0x0aff                                    cursor ? ??? */
+    /*  0x0aff                                  cursor ? ??? */
     { 0x0ba3, 0x003c }, /*                   leftcaret < LESS-THAN SIGN */
     { 0x0ba6, 0x003e }, /*                  rightcaret > GREATER-THAN SIGN */
     { 0x0ba8, 0x2228 }, /*                   downcaret ∨ LOGICAL OR */
     { 0x0ba9, 0x2227 }, /*                     upcaret ∧ LOGICAL AND */
     { 0x0bc0, 0x00af }, /*                     overbar ¯ MACRON */
-    { 0x0bc2, 0x22a5 }, /*                    downtack ⊥ UP TACK */
+    { 0x0bc2, 0x22a4 }, /*                    downtack ⊤ DOWN TACK */
     { 0x0bc3, 0x2229 }, /*                      upshoe ∩ INTERSECTION */
     { 0x0bc4, 0x230a }, /*                   downstile ⌊ LEFT FLOOR */
     { 0x0bc6, 0x005f }, /*                    underbar _ LOW LINE */
     { 0x0bca, 0x2218 }, /*                         jot ∘ RING OPERATOR */
-    { 0x0bcc, 0x2395 }, /*                        quad ⎕ APL FUNCTIONAL SYMBOL QUAD */
-    { 0x0bce, 0x22a4 }, /*                      uptack ⊤ DOWN TACK */
+    { 0x0bcc, 0x2395 }, /*                        quad ⎕ APL FUNCTIONAL SYMBOL QUAD (Unicode 3.0) */
+    { 0x0bce, 0x22a5 }, /*                      uptack ⊥ UP TACK */
     { 0x0bcf, 0x25cb }, /*                      circle ○ WHITE CIRCLE */
     { 0x0bd3, 0x2308 }, /*                     upstile ⌈ LEFT CEILING */
     { 0x0bd6, 0x222a }, /*                    downshoe ∪ UNION */
     { 0x0bd8, 0x2283 }, /*                   rightshoe ⊃ SUPERSET OF */
     { 0x0bda, 0x2282 }, /*                    leftshoe ⊂ SUBSET OF */
-    { 0x0bdc, 0x22a2 }, /*                    lefttack ⊢ RIGHT TACK */
-    { 0x0bfc, 0x22a3 }, /*                   righttack ⊣ LEFT TACK */
+    { 0x0bdc, 0x22a3 }, /*                    lefttack ⊣ LEFT TACK */
+    { 0x0bfc, 0x22a2 }, /*                   righttack ⊢ RIGHT TACK */
     { 0x0cdf, 0x2017 }, /*        hebrew_doublelowline ‗ DOUBLE LOW LINE */
     { 0x0ce0, 0x05d0 }, /*                hebrew_aleph א HEBREW LETTER ALEF */
     { 0x0ce1, 0x05d1 }, /*                  hebrew_bet ב HEBREW LETTER BET */
@@ -691,7 +696,7 @@ struct codepair {
     { 0x0dd8, 0x0e38 }, /*                  Thai_sarau ุ THAI CHARACTER SARA U */
     { 0x0dd9, 0x0e39 }, /*                 Thai_sarauu ู THAI CHARACTER SARA UU */
     { 0x0dda, 0x0e3a }, /*                Thai_phinthu ฺ THAI CHARACTER PHINTHU */
-    /*  0x0dde                    Thai_maihanakat_maitho ? ??? */
+    { 0x0dde, 0x0e3e }, /*      Thai_maihanakat_maitho ฾ ??? */
     { 0x0ddf, 0x0e3f }, /*                   Thai_baht ฿ THAI CURRENCY SYMBOL BAHT */
     { 0x0de0, 0x0e40 }, /*                  Thai_sarae เ THAI CHARACTER SARA E */
     { 0x0de1, 0x0e41 }, /*                 Thai_saraae แ THAI CHARACTER SARA AE */
@@ -808,7 +813,7 @@ struct codepair {
     { 0x0ef9, 0x11f0 }, /*  Hangul_J_KkogjiDalrinIeung ᇰ HANGUL JONGSEONG YESIEUNG */
     { 0x0efa, 0x11f9 }, /*        Hangul_J_YeorinHieuh ᇹ HANGUL JONGSEONG YEORINHIEUH */
     { 0x0eff, 0x20a9 }, /*                  Korean_Won ₩ WON SIGN */
-    { 0x13a4, 0x20ac }, /*                        Euro € EURO SIGN */
+    /* { 0x13a4, 0x20ac },                        Euro € EURO SIGN */
     { 0x13bc, 0x0152 }, /*                          OE Œ LATIN CAPITAL LIGATURE OE */
     { 0x13bd, 0x0153 }, /*                          oe œ LATIN SMALL LIGATURE OE */
     { 0x13be, 0x0178 }, /*                  Ydiaeresis Ÿ LATIN CAPITAL LETTER Y WITH DIAERESIS */
@@ -826,9 +831,34 @@ long KeySymConvert::convert(KeySym keysym)
             (keysym >= 0x00a0 && keysym <= 0x00ff))
         return keysym;
 
-    /* also check for directly encoded 24-bit UCS characters */
-    if ((keysym & 0xff000000) == 0x01000000)
-        return keysym & 0x00ffffff;
+    /* special keysyms : Keypad functions, keypad numbers
+     *  cleverly chosen to map to ASCII.
+     *  XKB_KEY_BackSpace   <= keysym <= XsKB_KEY_Clear
+     *  XKB_KEY_KP_Multiply <= keysym <= XKB_KEY_KP_9
+     *  keysym in {XKB_KEY_KP_Space,
+     *     XKB_KEY_Return, XKB_KEY_Escape,
+     *     XKB_KEY_Delete, XKB_KEY_KP_Tab, XKB_KEY_KP_Enter,
+     *     XKB_KEY_KP_Equal}
+     */
+    if ((keysym >= 0xff08 && keysym <= 0xff0b) ||
+        (keysym >= 0xffaa && keysym <= 0xffb9) ||
+         keysym == 0xff80 ||
+         keysym == 0xff0d || keysym == 0xff1b ||
+         keysym == 0xffff || keysym == 0xff89 ||
+         keysym == 0xff8d || keysym == 0xffbd)
+        return keysym & 0x7f;
+
+    /* Exclude surrogates: they are invalid in UTF-32. */
+    if (keysym >= 0x0100d800 &&
+        keysym <= 0x0100dfff)
+        return NO_KEYSYM_UNICODE_CONVERSION;
+
+    /* also check for directly encoded 24-bit UCS characters
+     * XKB_KEYSYM_UNICODE_OFFSET = 0x01000000
+     * XKB_KEYSYM_UNICODE_MAX = 0x0110ffff
+     */
+    if (0x01000000 <= keysym && keysym <= 0x0110ffff)
+        return keysym - 0x01000000;
 
     /* binary search in table */
     while (max >= min) {
@@ -844,5 +874,5 @@ long KeySymConvert::convert(KeySym keysym)
     }
 
     /* no matching Unicode value found */
-    return -1;
+    return NO_KEYSYM_UNICODE_CONVERSION;
 }
