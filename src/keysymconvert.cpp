@@ -828,7 +828,7 @@ long KeySymConvert::convert(KeySym keysym)
 
     /* need a button text and return normal instead of combining char.
      * { 0xfe52, 0x0302 }: circumflex ^ COMBINING CIRCUMFLEX ACCENT
-     * { 0xfe57, 0x20ac }: diaeresis " COMBINING DIAERESIS
+     * { 0xfe57, 0x0308 }: diaeresis " COMBINING DIAERESIS
      */
     if (keysym == 0xfe52) return 0x005e; /* ^ CIRCUMFLEX ACCENT */
     if (keysym == 0xfe57) return 0x00a8; /* ¨ DIAERESIS */
