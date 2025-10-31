@@ -200,11 +200,16 @@ void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText& text)
     Display *display = XOpenDisplay(nullptr);
     KeySym *keysym = XGetKeyboardMapping(display, button_code, 1, &keysyms_per_keycode);
 
-    int index_normal = layout_index * 2;
-    int index_shift = index_normal + 1;
+    KeySym normal = XkbKeycodeToKeysym( display, button_code, layout_index, 0);
+    KeySym shift  = XkbKeycodeToKeysym( display, button_code, layout_index, 1);
+                                // 0, event.xkey.state & ShiftMask ? 1 : 0);
 
-    KeySym normal = keysym[index_normal];
-    KeySym shift = keysym[index_shift];
+    // TODO: this only works for the first two layouts
+    // int index_normal = layout_index * 2;
+    // int index_shift  = index_normal + 1;
+    //
+    // KeySym normal = keysym[index_normal];
+    // KeySym shift  = keysym[index_shift];
 
 
     long int ret = kconvert.convert(normal);
