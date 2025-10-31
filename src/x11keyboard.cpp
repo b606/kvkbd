@@ -60,7 +60,6 @@ X11Keyboard::X11Keyboard(QObject *parent): VKeyboard(parent)
     session.connect(service, path, interface, QLatin1String("layoutChanged"), this, SLOT(layoutChanged()));
     session.connect(service, path, interface, QLatin1String("layoutListChanged"), this, SLOT(constructLayouts()));
 
-    constructLayouts();
     groupTimer = new QTimer(parent);
     groupTimer->setInterval(250);
 
@@ -78,6 +77,7 @@ X11Keyboard::~X11Keyboard()
 
 void X11Keyboard::start()
 {
+    constructLayouts();
     layoutChanged();
     Q_EMIT groupStateChanged(groupState);
     groupTimer->start();
