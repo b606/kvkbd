@@ -195,17 +195,11 @@ void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText& text)
 
     KeyCode button_code = keyCode;
 
-    int keysyms_per_keycode = 0;
-
     Display *display = XOpenDisplay(nullptr);
-    KeySym *keysym = XGetKeyboardMapping(display, button_code, 1, &keysyms_per_keycode);
 
-    int index_normal = layout_index * 2;
-    int index_shift = index_normal + 1;
-
-    KeySym normal = keysym[index_normal];
-    KeySym shift = keysym[index_shift];
-
+    // layout_index cycles around the first four layouts on X11 (Plasma keyboard kcm can define more layouts)
+    KeySym normal = XkbKeycodeToKeysym( display, button_code, layout_index, 0);
+    KeySym shift  = XkbKeycodeToKeysym( display, button_code, layout_index, 1);
 
     long int ret = kconvert.convert(normal);
     long int shiftRet = kconvert.convert(shift);
@@ -219,6 +213,5 @@ void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText& text)
     text.append(normalText);
     text.append(shiftText);
 
-    XFree((char *) keysym);
     XCloseDisplay(display);
 }
