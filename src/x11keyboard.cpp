@@ -197,6 +197,9 @@ void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText& text)
 
     Display *display = XOpenDisplay(nullptr);
 
+    // TODO: get Shift Level 3 text (Alt.Gr / Mod5)
+
+    // TODO: check for NO_SYMBOL
     // layout_index cycles around the first four layouts on X11 (Plasma keyboard kcm can define more layouts)
     KeySym normal = XkbKeycodeToKeysym( display, button_code, layout_index, 0);
     KeySym shift  = XkbKeycodeToKeysym( display, button_code, layout_index, 1);
@@ -204,6 +207,10 @@ void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText& text)
     long int ret = kconvert.convert(normal);
     long int shiftRet = kconvert.convert(shift);
 
+    // TODO: process dead key . See /usr/include/X11/keysymdef.h
+    // XK_dead_grave 0xfe50 -> XK_dead_currency 0xfe6f
+    // XK_dead_a 0xfe80 -> XK_dead_hamza 0xfe8d
+    // XK_dead_lowline 0xfe90 -> XK_dead_longsolidusoverlay 0xfe93
     QChar normalText = QChar((uint)ret);
     QChar shiftText = QChar((uint)shiftRet);
 

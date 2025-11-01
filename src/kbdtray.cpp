@@ -24,6 +24,7 @@
 #include <KLocalizedString>
 
 // TODO: find a way to hide the widget before asking for quit
+//  (QFlags<ApplicationState> & Qt::ApplicationHidden == 0)
 KbdTray::KbdTray(QWidget* parent) : QSystemTrayIcon(parent)
 {
     setObjectName("KvkbdTray");
