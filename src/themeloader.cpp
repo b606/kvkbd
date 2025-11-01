@@ -294,6 +294,7 @@ void ThemeLoader::loadKeys(MainWidget *vPart, const QDomNode& wNode)
                 applyProperty(btn, QLatin1String("group_toggle"), &attributes);
                 applyProperty(btn, QLatin1String("group_name"), &attributes);
                 applyProperty(btn, QLatin1String("colorGroup"), &attributes, QLatin1String("normal"));
+                // TODO: tooltip does not show
                 applyProperty(btn, QLatin1String("tooltip"), &attributes);
 
                 QString modifier = attributes.namedItem(QLatin1String("modifier")).toAttr().value();

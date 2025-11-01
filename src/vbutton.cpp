@@ -103,6 +103,7 @@ void VButton::updateText()
     bool doCaps = isCaps ;
     if (isShift) doCaps = !doCaps;
 
+    // TODO: bug for keycode 51 (french), displays M instead of µ (greek micron)
     if (doCaps) {
         text = text.toUpper();
     }
