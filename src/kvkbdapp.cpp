@@ -318,6 +318,7 @@ void KvkbdApp::partLoaded(MainWidget *vPart, int total_rows, int total_cols)
     QObject::connect(xkbd, SIGNAL(keyProcessComplete(unsigned int)), this, SLOT(keyProcessComplete(unsigned int)));
 
     QObject::connect(this, SIGNAL(textSwitch(bool)), vPart, SLOT(textSwitch(bool)));
+    QObject::connect(this, SIGNAL(textSwitchLevel3(bool)), vPart, SLOT(textSwitchLevel3(bool)));
     QObject::connect(this, SIGNAL(fontUpdated(const QFont&)), vPart, SLOT(updateFont(const QFont&)));
 }
 
@@ -352,6 +353,17 @@ void KvkbdApp::buttonAction(const QString &action)
                 if (btn->isCheckable() && btn->isChecked()) setShift=true;
             }
             Q_EMIT textSwitch(setShift);
+        }
+    } else if (QString::compare(action, QLatin1String("shiftLevel3Text")) == 0) {
+        if (actionButtons.contains(action)) {
+            QList<VButton*> buttons = actionButtons.values(action);
+            QListIterator<VButton *> itr(buttons);
+            bool setShiftLevel3 = false;
+            while (itr.hasNext()) {
+                VButton *btn = itr.next();
+                if (btn->isCheckable() && btn->isChecked()) setShiftLevel3 = true;
+            }
+            Q_EMIT textSwitchLevel3(setShiftLevel3);
         }
     }
 }
