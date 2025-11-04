@@ -18,6 +18,8 @@ VButton::VButton(QWidget *parent) :
     rightClicked = false;
     mTextIndex = 0;
     isCaps = false;
+    isShift = false;
+    isShiftLevel3 = false;
 
     keyTimer = new QTimer(this);
 
@@ -44,7 +46,7 @@ unsigned int VButton::getKeyCode()
     return this->keyCode;
 }
 
-void VButton::setButtonText(const ButtonText& text)
+void VButton::setButtonText(const ButtonText &text)
 {
     this->mButtonText = text;
 }
@@ -66,35 +68,56 @@ int VButton::textIndex()
 
 void VButton::nextText()
 {
-    if (mButtonText.count()<1)return;
+    if (mButtonText.count() < 1) return;
 
     mTextIndex++;
-    int textCount = mButtonText.count()-1;
-    if (mTextIndex>textCount) mTextIndex=0;
+    int textCount = mButtonText.count() - 1;
+    if (mTextIndex > textCount) mTextIndex = 0;
 
     updateText();
 }
 
 void VButton::setCaps(bool mode)
 {
-    if (mButtonText.count()<1)return;
+    if (mButtonText.count() < 1) return;
 
     isCaps = mode;
 }
+
 void VButton::setShift(bool mode)
 {
-    if (mButtonText.count()<1)return;
+    int textCount = mButtonText.count();
+    if (mButtonText.count() < 1) return;
     if (mode) {
-        this->mTextIndex = 1;
+        this->mTextIndex += 1;
+    } else {
+        this->mTextIndex -= 1;
     }
-    else {
-        this->mTextIndex = 0;
-    }
+    // unsigned modulo: mTextIndex % textCount
+    if (mTextIndex < 0) mTextIndex += textCount;
+    if (mTextIndex >= textCount) mTextIndex -= textCount;
     isShift = mode;
 }
+
+// mButtonText.at(index): index = 0:normal, 1:shift, 2:altgr, 3:altgr+shift
+void VButton::setShiftLevel3(bool mode)
+{
+    int textCount = mButtonText.count();
+    if (mButtonText.count() < 3) return;
+    if (mode) {
+        this->mTextIndex += 2;
+    } else {
+        this->mTextIndex -= 2;
+    }
+    if (mTextIndex < 0) mTextIndex += textCount;
+    if (mTextIndex >= textCount) mTextIndex -= textCount;
+    assert((mTextIndex >= 0) && (mTextIndex < textCount));
+    isShiftLevel3 = mode;
+}
+
 void VButton::updateText()
 {
-    if (mButtonText.count()<1)return;
+    if (mButtonText.count() < 1)return;
 
     QString text = mButtonText.at(this->mTextIndex);
     if (text == QLatin1Char('&')) {
@@ -104,11 +127,12 @@ void VButton::updateText()
     bool doCaps = isCaps ;
     if (isShift) doCaps = !doCaps;
 
-    // TODO: bug for keycode 51 (french), displays M instead of µ (greek micron)
+    // TODO: bug for keycode 51 (french).
+    // The button displays 'M' instead of 'µ' (greek micron) when capslock
+    // but X11Keyboard sends the correct char 'µ'.
     if (doCaps) {
         text = text.toUpper();
-    }
-    else {
+    } else {
         text = text.toLower();
     }
     this->setText(text);
@@ -136,7 +160,7 @@ void VButton::mousePressEvent(QMouseEvent *e)
         rightClicked = true;
     }
 
-    if (this->keyCode>0) {
+    if (this->keyCode > 0) {
         sendKey();
 
         if (!isCheckable()) {

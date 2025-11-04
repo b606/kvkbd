@@ -220,7 +220,7 @@ void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText& text)
 
     KeySym shift_L3  = XkbKeycodeToKeysym(m_display, button_code, layout_index, 3);
     if (shift_L3 == NO_KEYSYM_UNICODE_CONVERSION) {
-        shift_L3 = normal_L3;
+        shift_L3 = normal_L3; // TODO: check official interpretation (shift_L3 = shift ?)
     }
 
     long int ret = kconvert.convert(normal);
