@@ -7,15 +7,15 @@
 #include <QDBusMetaType>
 
 
-KbdLayout::KbdLayout(const QString& shortName, const QString& name,
-              const QString& variantName) : QObject()
+KbdLayout::KbdLayout(const QString &shortName, const QString &name,
+                     const QString &variantName) : QObject()
 {
     setShortName(shortName);
     setName(name);
     setVariantName(variantName);
 }
 
-KbdLayout::KbdLayout(const KbdLayout& kbdLayout) : QObject()
+KbdLayout::KbdLayout(const KbdLayout &kbdLayout) : QObject()
 {
     setShortName(kbdLayout.shortName());
     setName(kbdLayout.name());
@@ -30,7 +30,7 @@ QString KbdLayout::name() const
     return m_name;
 }
 
-void KbdLayout::setName(const QString& name)
+void KbdLayout::setName(const QString &name)
 {
     if (m_name == name) {
         return;
@@ -44,7 +44,7 @@ QString KbdLayout::shortName() const
     return m_shortName;
 }
 
-void KbdLayout::setShortName(const QString& shortName)
+void KbdLayout::setShortName(const QString &shortName)
 {
     if (m_shortName == shortName) {
         return;
@@ -58,7 +58,7 @@ QString KbdLayout::variantName() const
     return m_variantName;
 }
 
-void KbdLayout::setVariantName(const QString& variantName)
+void KbdLayout::setVariantName(const QString &variantName)
 {
     if (m_variantName == variantName) {
         return;
@@ -67,14 +67,14 @@ void KbdLayout::setVariantName(const QString& variantName)
     m_variantName = variantName;
 }
 
-KbdLayout& KbdLayout::operator=(const KbdLayout& kbdLayout)
+KbdLayout &KbdLayout::operator=(const KbdLayout &kbdLayout)
 {
-    if (&kbdLayout != this) {        
+    if (&kbdLayout != this) {
         setShortName(kbdLayout.shortName());
         setName(kbdLayout.name());
         setVariantName(kbdLayout.variantName());
     }
-    return *this;    
+    return *this;
 }
 
 void KbdLayout::registerMetaType()
@@ -88,21 +88,21 @@ void KbdLayout::registerMetaType()
 
 QDBusArgument &operator<<(QDBusArgument &argument, const KbdLayout &kbdLayout)
 {
-  argument.beginStructure();    
-  argument << kbdLayout.m_shortName;    
-  argument << kbdLayout.m_name;    
-  argument << kbdLayout.m_variantName;    
-  argument.endStructure();     
-  return argument;    
+    argument.beginStructure();
+    argument << kbdLayout.m_shortName;
+    argument << kbdLayout.m_name;
+    argument << kbdLayout.m_variantName;
+    argument.endStructure();
+    return argument;
 }
 
 const QDBusArgument &operator>>(const QDBusArgument &argument, KbdLayout &kbdLayout)
 {
-  argument.beginStructure();    
-  argument >> kbdLayout.m_shortName;    
-  argument >> kbdLayout.m_name;    
-  argument >> kbdLayout.m_variantName;    
-  argument.endStructure();     
-  return argument;
+    argument.beginStructure();
+    argument >> kbdLayout.m_shortName;
+    argument >> kbdLayout.m_name;
+    argument >> kbdLayout.m_variantName;
+    argument.endStructure();
+    return argument;
 }
 

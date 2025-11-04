@@ -176,8 +176,8 @@ void X11Keyboard::queryModState()
     groupState.insert(QLatin1String("shitlevel3"), curr_shift_level3_state);
 
     if ((curr_caps_state != caps_state)
-     || (curr_num_state != num_state)
-     || (curr_shift_level3_state != shift_level3_state) ) {
+            || (curr_num_state != num_state)
+            || (curr_shift_level3_state != shift_level3_state)) {
         Q_EMIT groupStateChanged(groupState);
     }
 }
@@ -197,7 +197,7 @@ void X11Keyboard::layoutChanged()
     }
 }
 
-void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText& text)
+void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText &text)
 {
     if (keyCode == 0) {
         text.clear();
@@ -220,7 +220,7 @@ void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText& text)
 
     KeySym shift_L3  = XkbKeycodeToKeysym(m_display, button_code, layout_index, 3);
     if (shift_L3 == NO_KEYSYM_UNICODE_CONVERSION) {
-        shift_L3 = normal_L3; // TODO: check official interpretation (shift_L3 = shift ?)
+        shift_L3 = normal_L3;
     }
 
     long int ret = kconvert.convert(normal);

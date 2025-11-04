@@ -9,6 +9,7 @@
 #include <QSize>
 #include <QString>
 #include <QTimer>
+
 #include "vkeyboard.h"
 
 class VButton : public QPushButton
@@ -22,6 +23,7 @@ public:
 
     void reposition(const QSize &baseSize, const QSize &size);
     QRect VRect();
+    QString toString();
 
     unsigned int getKeyCode();
     void setKeyCode(unsigned int keyCode);

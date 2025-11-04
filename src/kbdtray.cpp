@@ -3,7 +3,7 @@
  * Copyright (C) 2007-2014 Todor Gyumyushev <yodor1@gmail.com>
  * Copyright (C) 2008 Guillaume Martres <smarter@ubuntu.com>
  * Copyright (C) 2020–2023 Anthony Fieroni, Fredrick R. Brennan and Kvkbd Developers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -25,7 +25,7 @@
 
 // TODO: find a way to hide the widget before asking for quit
 //  (QFlags<ApplicationState> & Qt::ApplicationHidden == 0)
-KbdTray::KbdTray(QWidget* parent) : QSystemTrayIcon(parent)
+KbdTray::KbdTray(QWidget *parent) : QSystemTrayIcon(parent)
 {
     setObjectName("KvkbdTray");
     setIcon(QIcon::fromTheme(QLatin1String("input-keyboard")));
@@ -41,7 +41,7 @@ KbdTray::~KbdTray()
     delete contextMenu();
 }
 
-QMenu* KbdTray::getContextMenu()
+QMenu *KbdTray::getContextMenu()
 {
     return this->contextMenu();
 }

@@ -47,7 +47,7 @@ ThemeLoader::~ThemeLoader()
 {
 }
 
-void ThemeLoader::loadTheme(QString& themeName)
+void ThemeLoader::loadTheme(QString &themeName)
 {
     bool loading = true;
     while (loading) {
@@ -58,7 +58,7 @@ void ThemeLoader::loadTheme(QString& themeName)
         themeName = QLatin1String("standard");
     }
 }
-void ThemeLoader::loadColorFile(const QString& fileName)
+void ThemeLoader::loadColorFile(const QString &fileName)
 {
     QFile themeFile;
 
@@ -70,23 +70,23 @@ void ThemeLoader::loadColorFile(const QString& fileName)
         return;
     }
 
-    ((QWidget*)parent())->setStyleSheet(QString::fromLatin1(themeFile.readAll()));
-    ((QWidget*)parent())->setProperty("colors", fileName);
+    ((QWidget *)parent())->setStyleSheet(QString::fromLatin1(themeFile.readAll()));
+    ((QWidget *)parent())->setProperty("colors", fileName);
     themeFile.close();
 
-    ((QWidget*)parent())->repaint();
+    ((QWidget *)parent())->repaint();
 
     Q_EMIT colorStyleChanged();
 }
 void ThemeLoader::loadColorStyle()
 {
-    QAction *action = (QAction*)QObject::sender();
+    QAction *action = (QAction *)QObject::sender();
 
     QFileInfo info(action->data().toString());
 
     this->loadColorFile(info.absoluteFilePath());
 }
-void ThemeLoader::findColorStyles(QMenu *colors, const QString& configSelectedStyle)
+void ThemeLoader::findColorStyles(QMenu *colors, const QString &configSelectedStyle)
 {
     QActionGroup *color_group = new QActionGroup(colors);
     color_group->setExclusive(true);
@@ -98,7 +98,7 @@ void ThemeLoader::findColorStyles(QMenu *colors, const QString& configSelectedSt
     QListIterator<QFileInfo> itr(list);
     while (itr.hasNext()) {
         QFileInfo fileInfo = itr.next();
-         QAction *item = new QAction(colors);
+        QAction *item = new QAction(colors);
         item->setCheckable(true);
         item->setText(fileInfo.baseName());
         item->setData(fileInfo.absoluteFilePath());
@@ -112,7 +112,7 @@ void ThemeLoader::findColorStyles(QMenu *colors, const QString& configSelectedSt
     }
     QAction *selectedAction = nullptr;
 
-    QListIterator<QAction*> itrActions(color_group->actions());
+    QListIterator<QAction *> itrActions(color_group->actions());
     while (itrActions.hasNext()) {
         QAction *item = itrActions.next();
 
@@ -128,7 +128,7 @@ void ThemeLoader::findColorStyles(QMenu *colors, const QString& configSelectedSt
     }
 }
 
-int ThemeLoader::loadLayout(const QString& themeName, const QString& path)
+int ThemeLoader::loadLayout(const QString &themeName, const QString &path)
 {
     QFile themeFile;
     QDomDocument doc;
@@ -154,7 +154,7 @@ int ThemeLoader::loadLayout(const QString& themeName, const QString& path)
     defaultWidth = wNode.attributes().namedItem(QLatin1String("width")).toAttr().value().toInt();
 
     QDomNodeList nList = (wNode.toElement()).elementsByTagName(QLatin1String("item"));
-    for (int a=0; a<nList.count(); a++) {
+    for (int a = 0; a < nList.count(); a++) {
         QDomNode node = nList.at(a);
         int width = node.attributes().namedItem(QLatin1String("width")).toAttr().value().toInt();
         QString hintName = node.attributes().namedItem(QLatin1String("name")).toAttr().value();
@@ -164,7 +164,7 @@ int ThemeLoader::loadLayout(const QString& themeName, const QString& path)
     wList = docElem.elementsByTagName(QLatin1String("buttonHeight"));
     wNode = wList.at(0);
     nList = (wNode.toElement()).elementsByTagName(QLatin1String("item"));
-    for (int a=0; a<nList.count(); a++) {
+    for (int a = 0; a < nList.count(); a++) {
         QDomNode node = nList.at(a);
         int height = node.attributes().namedItem(QLatin1String("height")).toAttr().value().toInt();
         QString hintName = node.attributes().namedItem(QLatin1String("name")).toAttr().value();
@@ -174,7 +174,7 @@ int ThemeLoader::loadLayout(const QString& themeName, const QString& path)
     wList = docElem.elementsByTagName(QLatin1String("spacingHints"));
     wNode = wList.at(0);
     nList = (wNode.toElement()).elementsByTagName(QLatin1String("item"));
-    for (int a=0; a<nList.count(); a++) {
+    for (int a = 0; a < nList.count(); a++) {
         QDomNode node = nList.at(a);
         int width = node.attributes().namedItem(QLatin1String("width")).toAttr().value().toInt();
         QString hintName = node.attributes().namedItem(QLatin1String("name")).toAttr().value();
@@ -187,18 +187,18 @@ int ThemeLoader::loadLayout(const QString& themeName, const QString& path)
     //insert main part to widget
     QString partName = wNode.attributes().namedItem(QLatin1String("name")).toAttr().value();
 
-    MainWidget *part = new MainWidget((QWidget*)parent());
+    MainWidget *part = new MainWidget((QWidget *)parent());
     part->setProperty("part", QLatin1String("main"));
 
     loadKeys(part, wNode);
 
     wList = wNode.childNodes();
 
-    for (int a=0; a<wList.size(); a++) {
+    for (int a = 0; a < wList.size(); a++) {
 
         QDomNode wNode = wList.at(a);
         if (wNode.toElement().tagName() == QLatin1String("extension")) {
-            MainWidget *widget1 = new MainWidget((QWidget*)parent());
+            MainWidget *widget1 = new MainWidget((QWidget *)parent());
             widget1->setProperty("part", QLatin1String("extension"));
             loadKeys(widget1, wNode);
             break;
@@ -206,24 +206,23 @@ int ThemeLoader::loadLayout(const QString& themeName, const QString& path)
     }
     return 0;
 }
-bool ThemeLoader::applyProperty(VButton *btn, const QString& attributeName, QDomNamedNodeMap *attributes, QVariant defaultValue)
+bool ThemeLoader::applyProperty(VButton *btn, const QString &attributeName, QDomNamedNodeMap *attributes, QVariant defaultValue)
 {
     bool ret = false;
 
     QString attributeValue = attributes->namedItem(attributeName).toAttr().value();
-    if (attributeValue.length()>0) {
+    if (attributeValue.length() > 0) {
         btn->setProperty(qPrintable(attributeName), attributeValue);
         ret = true;
-    }
-    else {
-        if (defaultValue.toString().length()>0) {
+    } else {
+        if (defaultValue.toString().length() > 0) {
             btn->setProperty(qPrintable(attributeName), defaultValue);
             ret = true;
         }
     }
     return ret;
 }
-void ThemeLoader::loadKeys(MainWidget *vPart, const QDomNode& wNode)
+void ThemeLoader::loadKeys(MainWidget *vPart, const QDomNode &wNode)
 {
     int max_sx = 0;
     int max_sy = 0;
@@ -239,7 +238,7 @@ void ThemeLoader::loadKeys(MainWidget *vPart, const QDomNode& wNode)
 
     QDomNodeList nList = wNode.childNodes();
 
-    for (int a=0; a<nList.size(); a++) {
+    for (int a = 0; a < nList.size(); a++) {
 
         QDomNode wNode = nList.at(a);
         if (wNode.toElement().tagName() != QLatin1String("row")) continue;
@@ -257,11 +256,11 @@ void ThemeLoader::loadKeys(MainWidget *vPart, const QDomNode& wNode)
             rowHeight = heightMap.value(rowHeightHint);
         }
 
-        for (int b=0; b<key_list.count(); b++) {
+        for (int b = 0; b < key_list.count(); b++) {
             QDomNode node = key_list.at(b);
             QDomNamedNodeMap attributes = node.attributes();
 
-            if (node.toElement().tagName()== QLatin1String("key")) {
+            if (node.toElement().tagName() == QLatin1String("key")) {
 
                 VButton *btn = new VButton(vPart);
                 row_buttons++;
@@ -282,7 +281,7 @@ void ThemeLoader::loadKeys(MainWidget *vPart, const QDomNode& wNode)
 
                 //name
                 QString button_name = attributes.namedItem(QLatin1String("name")).toAttr().value();
-                if (button_name.length()>0) {
+                if (button_name.length() > 0) {
                     btn->setObjectName(button_name);
                 }
 
@@ -298,13 +297,13 @@ void ThemeLoader::loadKeys(MainWidget *vPart, const QDomNode& wNode)
                 applyProperty(btn, QLatin1String("tooltip"), &attributes);
 
                 QString modifier = attributes.namedItem(QLatin1String("modifier")).toAttr().value();
-                if (modifier.toInt()>0) {
+                if (modifier.toInt() > 0) {
                     btn->setProperty("modifier", true);
                     btn->setCheckable(true);
                 }
 
                 unsigned int key_code = attributes.namedItem(QLatin1String("code")).toAttr().value().toInt();
-                if (key_code>0) {
+                if (key_code > 0) {
                     btn->setKeyCode(key_code);
                 }
 
@@ -313,20 +312,19 @@ void ThemeLoader::loadKeys(MainWidget *vPart, const QDomNode& wNode)
                 }
 
                 int is_checkable = attributes.namedItem(QLatin1String("checkable")).toAttr().value().toInt();
-                if (is_checkable>0) {
+                if (is_checkable > 0) {
                     btn->setCheckable(true);
                     btn->setChecked(false);
                 }
 
-                btn->move(sx,sy);
+                btn->move(sx, sy);
                 btn->resize(buttonWidth, buttonHeight);
                 btn->storeSize();
 
-                sx += buttonWidth+rowSpacingX;
+                sx += buttonWidth + rowSpacingX;
 
                 Q_EMIT buttonLoaded(btn);
-            }
-            else if (node.toElement().tagName()==QLatin1String("spacing")) {
+            } else if (node.toElement().tagName() == QLatin1String("spacing")) {
 
                 QString widthHint = attributes.namedItem(QLatin1String("width")).toAttr().value();
                 QString heightHint = attributes.namedItem(QLatin1String("height")).toAttr().value();
@@ -337,20 +335,20 @@ void ThemeLoader::loadKeys(MainWidget *vPart, const QDomNode& wNode)
                 }
                 if (heightMap.contains(heightHint)) {
                     int spacingHeight = heightMap.value(heightHint);
-                    if (spacingHeight>rowHeight) rowHeight = spacingHeight;
+                    if (spacingHeight > rowHeight) rowHeight = spacingHeight;
                 }
             }
         }//row
 
-        if (sx>max_sx) max_sx = sx;
+        if (sx > max_sx) max_sx = sx;
 
-        sy+=(rowHeight+rowSpacingY);
-        sx=0+rowMarginLeft;
+        sy += (rowHeight + rowSpacingY);
+        sx = 0 + rowMarginLeft;
 
-        if (row_buttons>total_cols) total_cols=row_buttons;
+        if (row_buttons > total_cols) total_cols = row_buttons;
 
     }
-    if (sy>max_sy) max_sy = sy;
+    if (sy > max_sy) max_sy = sy;
 
     vPart->setBaseSize(max_sx, max_sy);
 

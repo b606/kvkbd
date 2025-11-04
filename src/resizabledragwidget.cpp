@@ -3,7 +3,7 @@
  * Copyright (C) 2007-2014 Todor Gyumyushev <yodor1@gmail.com>
  * Copyright (C) 2008 Guillaume Martres <smarter@ubuntu.com>
  * Copyright (C) 2020–2023 Anthony Fieroni, Fredrick R. Brennan and Kvkbd Developers
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -35,7 +35,7 @@ ResizableDragWidget::~ResizableDragWidget()
 {
 }
 
-void ResizableDragWidget::mousePressEvent(QMouseEvent * ev)
+void ResizableDragWidget::mousePressEvent(QMouseEvent *ev)
 {
 //     cout << "ResizableDragWidget::mousePressEvent" << endl;
 
@@ -48,7 +48,7 @@ void ResizableDragWidget::mousePressEvent(QMouseEvent * ev)
     }
 }
 
-void ResizableDragWidget::mouseMoveEvent(QMouseEvent * ev)
+void ResizableDragWidget::mouseMoveEvent(QMouseEvent *ev)
 {
 //     cout << "ResizableDragWidget::mouseMoveEvent | Resize: " << doResize << " | Dragged: " << dragged << endl;
 
@@ -64,7 +64,7 @@ void ResizableDragWidget::mouseMoveEvent(QMouseEvent * ev)
     resize(nw, nh);
 }
 
-void ResizableDragWidget::mouseReleaseEvent(QMouseEvent * e)
+void ResizableDragWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     DragWidget::mouseReleaseEvent(e);
 
