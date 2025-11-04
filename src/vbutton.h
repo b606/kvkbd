@@ -35,6 +35,7 @@ public:
     void nextText();
     void setCaps(bool mode);
     void setShift(bool mode);
+    void setShiftLevel3(bool mode);
 
 Q_SIGNALS:
     void keyClick(unsigned int);
@@ -55,6 +56,7 @@ protected:
 
     bool isCaps;
     bool isShift;
+    bool isShiftLevel3;
 
     static int RepeatShortDelay;
     static int RepeatLongDelay;
