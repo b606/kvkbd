@@ -43,10 +43,10 @@
 #include "kvkbdapp.h"
 #include "x11keyboard.h"
 
-QList<VButton*> modKeys;
+QList<VButton *> modKeys;
 
-#define DEFAULT_WIDTH 	640
-#define DEFAULT_HEIGHT 	210
+#define DEFAULT_WIDTH   640
+#define DEFAULT_HEIGHT  210
 
 void KvkbdApp::initGui(bool loginhelper)
 {
@@ -55,7 +55,7 @@ void KvkbdApp::initGui(bool loginhelper)
     connect(signalMapper, SIGNAL(mappedString(const QString &)), this, SLOT(buttonAction(const QString &)));
 
     widget = new ResizableDragWidget(nullptr);
-    widget->setContentsMargins(10,10,10,10);
+    widget->setContentsMargins(10, 10, 10, 10);
     widget->setProperty("name", QLatin1String("main"));
 
     KConfigGroup cfg(KSharedConfig::openConfig(), QLatin1String("General"));
@@ -74,14 +74,14 @@ void KvkbdApp::initGui(bool loginhelper)
     connect(tray, SIGNAL(requestVisibility()), widget, SLOT(toggleVisibility()));
 
     layout = new QGridLayout(widget);
-    layout->setContentsMargins(0,0,0,0);
+    layout->setContentsMargins(0, 0, 0, 0);
     widget->setLayout(layout);
 
     xkbd = new X11Keyboard(this);
 
     themeLoader = new ThemeLoader(widget);
-    connect(themeLoader, SIGNAL(partLoaded(MainWidget*, int, int)), this, SLOT(partLoaded(MainWidget*, int, int)));
-    connect(themeLoader, SIGNAL(buttonLoaded(VButton*)), this, SLOT(buttonLoaded(VButton*)));
+    connect(themeLoader, SIGNAL(partLoaded(MainWidget *, int, int)), this, SLOT(partLoaded(MainWidget *, int, int)));
+    connect(themeLoader, SIGNAL(buttonLoaded(VButton *)), this, SLOT(buttonLoaded(VButton *)));
 
     QMenu *cmenu = tray->contextMenu();
 
@@ -90,11 +90,11 @@ void KvkbdApp::initGui(bool loginhelper)
     cmenu->addAction(chooseFontAction);
 
     KToggleAction *autoResizeAction = new KToggleAction(i18nc("@action:inmenu", "Auto Resize Font"), this);
-    bool autoResizeEnabled = cfg.readEntry("autoresfont",true);
+    bool autoResizeEnabled = cfg.readEntry("autoresfont", true);
     autoResizeAction->setChecked(autoResizeEnabled);
     widget->setProperty("autoresfont", autoResizeEnabled);
     cmenu->addAction(autoResizeAction);
-    connect(autoResizeAction,SIGNAL(triggered(bool)), this, SLOT(autoResizeFont(bool)));
+    connect(autoResizeAction, SIGNAL(triggered(bool)), this, SLOT(autoResizeFont(bool)));
 
     bool blur = cfg.readEntry("blurBackground", QVariant(true)).toBool();
 
@@ -102,9 +102,9 @@ void KvkbdApp::initGui(bool loginhelper)
     blurBackgroundAction->setChecked(blur);
     cmenu->addAction(blurBackgroundAction);
     widget->blurBackground(blur);
-    connect(blurBackgroundAction,SIGNAL(triggered(bool)), widget, SLOT(blurBackground(bool)));
+    connect(blurBackgroundAction, SIGNAL(triggered(bool)), widget, SLOT(blurBackground(bool)));
     dock->blurBackground(blur);
-    connect(blurBackgroundAction,SIGNAL(triggered(bool)), dock, SLOT(blurBackground(bool)));
+    connect(blurBackgroundAction, SIGNAL(triggered(bool)), dock, SLOT(blurBackground(bool)));
     widget->blurBackground(blur);
     dock->blurBackground(blur);
 
@@ -112,19 +112,19 @@ void KvkbdApp::initGui(bool loginhelper)
     KToggleAction *showDockAction = new KToggleAction(i18nc("@action:inmenu", "Show Dock"), this);
     showDockAction->setChecked(dockVisible);
     cmenu->addAction(showDockAction);
-    connect(showDockAction,SIGNAL(triggered(bool)), dock, SLOT(setVisible(bool)));
+    connect(showDockAction, SIGNAL(triggered(bool)), dock, SLOT(setVisible(bool)));
 
     bool isLocked = cfg.readEntry("locked", QVariant(false)).toBool();
     KToggleAction *lockOnScreenAction = new KToggleAction(i18nc("@action:inmenu", "Lock on Screen"), this);
     lockOnScreenAction->setChecked(isLocked);
     cmenu->addAction(lockOnScreenAction);
-    connect(lockOnScreenAction,SIGNAL(triggered(bool)), widget, SLOT(setLocked(bool)));
+    connect(lockOnScreenAction, SIGNAL(triggered(bool)), widget, SLOT(setLocked(bool)));
 
     bool stickyModKeys = cfg.readEntry("stickyModKeys", QVariant(false)).toBool();
     KToggleAction *stickyModKeysAction = new KToggleAction(i18nc("@action:inmenu", "Sticky Modifier Keys"), this);
     stickyModKeysAction->setChecked(stickyModKeys);
     cmenu->addAction(stickyModKeysAction);
-    connect(stickyModKeysAction,SIGNAL(triggered(bool)), this, SLOT(setStickyModKeys(bool)));
+    connect(stickyModKeysAction, SIGNAL(triggered(bool)), this, SLOT(setStickyModKeys(bool)));
     widget->setProperty("stickyModKeys", stickyModKeys);
 
     QFont font = cfg.readEntry("font", widget->font());
@@ -139,21 +139,21 @@ void KvkbdApp::initGui(bool loginhelper)
 
     KHelpMenu *helpMenu = new KHelpMenu(widget, KAboutData::applicationData());
     helpMenu->menu()->setIcon(QIcon::fromTheme(QLatin1String("help-about")));
-    cmenu->addMenu((QMenu*)helpMenu->menu());
+    cmenu->addMenu((QMenu *)helpMenu->menu());
 
     QAction *quit = new QAction(QIcon::fromTheme(QLatin1String("application-exit")), i18nc("@action:inmenu", "Quit"), this);
     cmenu->addAction(quit);
-    connect(quit,SIGNAL(triggered(bool)), this, SLOT(quit()));
+    connect(quit, SIGNAL(triggered(bool)), this, SLOT(quit()));
 
     QString themeName = cfg.readEntry("layout", "standard");
     themeLoader->loadTheme(themeName);
     widget->setProperty("layout", themeName);
 
-    QSize defaultSize(DEFAULT_WIDTH,DEFAULT_HEIGHT);
+    QSize defaultSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     QRect screenGeometry = QGuiApplication::primaryScreen()->availableGeometry();
     qDebug() << "ScreenGeometry: " << screenGeometry;
 
-    QPoint bottomRight = screenGeometry.bottomRight()-QPoint(defaultSize.width(), defaultSize.height());
+    QPoint bottomRight = screenGeometry.bottomRight() - QPoint(defaultSize.width(), defaultSize.height());
 
     QRect widgetGeometry(bottomRight, defaultSize);
     qDebug() << "widgetGeometry: " << widgetGeometry;
@@ -165,7 +165,7 @@ void KvkbdApp::initGui(bool loginhelper)
     widget->setGeometry(c_geometry);
 
     QPoint pos = c_geometry.topLeft();
-    pos.setY(pos.y()-dock->height());
+    pos.setY(pos.y() - dock->height());
 
     QRect dockGeometry(pos, dock->size());
 
@@ -182,7 +182,7 @@ void KvkbdApp::initGui(bool loginhelper)
         toggleExtension();
     }
 
-    setQuitOnLastWindowClosed (is_login);
+    setQuitOnLastWindowClosed(is_login);
 
     connect(this, SIGNAL(aboutToQuit()), this, SLOT(storeConfig()));
     Q_EMIT fontUpdated(widget->font());
@@ -195,7 +195,7 @@ void KvkbdApp::initGui(bool loginhelper)
 
     if (!is_login) {
         bool vis = cfg.readEntry("visible", QVariant(true)).toBool();
-        if (!vis ) {
+        if (!vis) {
             widget->showMinimized();
         }
         widget->setWindowTitle(QLatin1String("kvkbd"));
@@ -277,20 +277,19 @@ void KvkbdApp::buttonLoaded(VButton *btn)
 {
     if (btn->property("modifier").toBool() == true) {
         modKeys.append(btn);
-    }
-    else {
-        QObject::connect(btn, SIGNAL(keyClick(unsigned int)), xkbd, SLOT(processKeyPress(unsigned int)) );
+    } else {
+        QObject::connect(btn, SIGNAL(keyClick(unsigned int)), xkbd, SLOT(processKeyPress(unsigned int)));
     }
     QString bAction = btn->property("action").toString();
 
-    if (bAction.length()>0) {
+    if (bAction.length() > 0) {
         connect(btn, SIGNAL(clicked()), signalMapper, SLOT(map()));
         signalMapper->setMapping(btn, bAction);
         actionButtons.insert(bAction, btn);
     }
 
     QString tooltip = btn->property("tooltip").toString();
-    if (tooltip.length()>0) {
+    if (tooltip.length() > 0) {
         btn->setToolTip(tooltip);
 
     }
@@ -303,23 +302,23 @@ void KvkbdApp::partLoaded(MainWidget *vPart, int total_rows, int total_cols)
     int row_pos = 0;
     int col_pos = 0;
 
-    if (layoutPosition.count()>0) {
+    if (layoutPosition.count() > 0) {
         QString partName = layoutPosition.keys().at(0);
         QRect lp = layoutPosition.value(partName);
         col_pos = lp.width();
     }
 
-    layout->addWidget(vPart,row_pos,col_pos,total_rows,total_cols);
+    layout->addWidget(vPart, row_pos, col_pos, total_rows, total_cols);
     parts.insert(partName, vPart);
-    layoutPosition.insert(partName, QRect(col_pos,row_pos,total_cols,total_rows));
+    layoutPosition.insert(partName, QRect(col_pos, row_pos, total_cols, total_rows));
 
-    QObject::connect(xkbd, SIGNAL(layoutUpdated(int,QString)), vPart, SLOT(updateLayout(int,QString)));
-    QObject::connect(xkbd, SIGNAL(groupStateChanged(const ModifierGroupStateMap&)), vPart, SLOT(updateGroupState(const ModifierGroupStateMap&)));
+    QObject::connect(xkbd, SIGNAL(layoutUpdated(int, QString)), vPart, SLOT(updateLayout(int, QString)));
+    QObject::connect(xkbd, SIGNAL(groupStateChanged(const ModifierGroupStateMap &)), vPart, SLOT(updateGroupState(const ModifierGroupStateMap &)));
     QObject::connect(xkbd, SIGNAL(keyProcessComplete(unsigned int)), this, SLOT(keyProcessComplete(unsigned int)));
 
     QObject::connect(this, SIGNAL(textSwitch(bool)), vPart, SLOT(textSwitch(bool)));
     QObject::connect(this, SIGNAL(textSwitchLevel3(bool)), vPart, SLOT(textSwitchLevel3(bool)));
-    QObject::connect(this, SIGNAL(fontUpdated(const QFont&)), vPart, SLOT(updateFont(const QFont&)));
+    QObject::connect(this, SIGNAL(fontUpdated(const QFont &)), vPart, SLOT(updateFont(const QFont &)));
 }
 
 void KvkbdApp::keyProcessComplete(unsigned int)
@@ -337,26 +336,26 @@ void KvkbdApp::keyProcessComplete(unsigned int)
 
 void KvkbdApp::buttonAction(const QString &action)
 {
-    if (QString::compare(action, QLatin1String("toggleVisibility"))==0) {
+    if (QString::compare(action, QLatin1String("toggleVisibility")) == 0) {
         if (!is_login) {
             widget->toggleVisibility();
         }
-    } else if (QString::compare(action, QLatin1String("toggleExtension"))==0) {
+    } else if (QString::compare(action, QLatin1String("toggleExtension")) == 0) {
         toggleExtension();
-    } else if (QString::compare(action, QLatin1String("shiftText"))==0) {
+    } else if (QString::compare(action, QLatin1String("shiftText")) == 0) {
         if (actionButtons.contains(action)) {
-            QList<VButton*> buttons = actionButtons.values(action);
+            QList<VButton *> buttons = actionButtons.values(action);
             QListIterator<VButton *> itr(buttons);
             bool setShift = false;
             while (itr.hasNext()) {
                 VButton *btn = itr.next();
-                if (btn->isCheckable() && btn->isChecked()) setShift=true;
+                if (btn->isCheckable() && btn->isChecked()) setShift = true;
             }
             Q_EMIT textSwitch(setShift);
         }
     } else if (QString::compare(action, QLatin1String("shiftLevel3Text")) == 0) {
         if (actionButtons.contains(action)) {
-            QList<VButton*> buttons = actionButtons.values(action);
+            QList<VButton *> buttons = actionButtons.values(action);
             QListIterator<VButton *> itr(buttons);
             bool setShiftLevel3 = false;
             while (itr.hasNext()) {
@@ -377,7 +376,7 @@ void KvkbdApp::toggleExtension()
     } else {
         QString partName = prt->property("part").toString();
         QRect span = layoutPosition.value(partName);
-        layout->addWidget(prt,span.y(),span.x(), span.height(), span.width());
+        layout->addWidget(prt, span.y(), span.x(), span.height(), span.width());
         prt->show();
     }
 }

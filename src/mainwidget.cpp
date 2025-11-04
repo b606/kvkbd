@@ -11,7 +11,7 @@ void MainWidget::setBaseSize(int w, int h)
     bsize.setHeight(h);
 
 }
-void MainWidget::updateGroupState(const ModifierGroupStateMap& stateMap)
+void MainWidget::updateGroupState(const ModifierGroupStateMap &stateMap)
 {
     QObjectList buttons = this->children();
     ModifierGroupStateMapIterator itr(stateMap);
@@ -22,32 +22,30 @@ void MainWidget::updateGroupState(const ModifierGroupStateMap& stateMap)
         QString group_name = itr.key();
         bool state = itr.value();
 
-        for (int a=0; a<buttons.count(); a++) {
+        for (int a = 0; a < buttons.count(); a++) {
 
-            VButton *btn = (VButton*)buttons.at(a);
+            VButton *btn = (VButton *)buttons.at(a);
 
             QString group_toggle = btn->property("group_toggle").toString();
             QString btn_group_name = btn->property("group_name").toString();
             QString group_label = btn->property("group_label").toString();
             QString label = btn->property("label").toString();
 
-            if (QString::compare(group_toggle,group_name)==0) {
+            if (QString::compare(group_toggle, group_name) == 0) {
 
-                if (group_label.length()>0 && label.length()>0) {
+                if (group_label.length() > 0 && label.length() > 0) {
                     if (state) {
                         btn->setText(group_label);
-                    }
-                    else {
+                    } else {
                         btn->setText(label);
                     }
                 }
-            }
-            else if (QString::compare(group_name, QLatin1String("capslock"))==0) {
+            } else if (QString::compare(group_name, QLatin1String("capslock")) == 0) {
                 btn->setCaps(state);
                 btn->updateText();
             }
 
-            if (QString::compare(btn_group_name, group_name)==0) {
+            if (QString::compare(btn_group_name, group_name) == 0) {
                 btn->setChecked(state);
             }
         }
@@ -58,8 +56,8 @@ void MainWidget::textSwitch(bool setShift)
 {
     QObjectList buttons = this->children();
 
-    for (int a=0; a<buttons.count(); a++) {
-        VButton *btn = (VButton*)buttons.at(a);
+    for (int a = 0; a < buttons.count(); a++) {
+        VButton *btn = (VButton *)buttons.at(a);
         btn->setShift(setShift);
         btn->updateText();
     }
@@ -70,32 +68,32 @@ void MainWidget::textSwitchLevel3(bool setShiftLevel3)
 {
     QObjectList buttons = this->children();
 
-    for (int a=0; a<buttons.count(); a++) {
-        VButton *btn = (VButton*)buttons.at(a);
+    for (int a = 0; a < buttons.count(); a++) {
+        VButton *btn = (VButton *)buttons.at(a);
         btn->setShiftLevel3(setShiftLevel3);
         btn->updateText();
     }
 
 }
 
-void MainWidget::updateLayout(int, const QString& layout_name)
+void MainWidget::updateLayout(int, const QString &layout_name)
 {
     QObjectList buttons = this->children();
 
-    VKeyboard *vkbd = (VKeyboard*)QObject::sender();
+    VKeyboard *vkbd = (VKeyboard *)QObject::sender();
 
-    for (int a=0; a<buttons.count(); a++) {
+    for (int a = 0; a < buttons.count(); a++) {
 
-        VButton *btn = (VButton*)buttons.at(a);
+        VButton *btn = (VButton *)buttons.at(a);
 
-        if (btn->property("label").toString().length()<1) {
+        if (btn->property("label").toString().length() < 1) {
             ButtonText text;
             vkbd->textForKeyCode(btn->getKeyCode(), text);
             btn->setButtonText(text);
             btn->updateText();
         }
 
-        if (btn->objectName()==QLatin1String("currentLayout")) {
+        if (btn->objectName() == QLatin1String("currentLayout")) {
             btn->setText(layout_name);
         }
     }
@@ -104,16 +102,16 @@ void MainWidget::updateLayout(int, const QString& layout_name)
 
 void MainWidget::resizeEvent(QResizeEvent *ev)
 {
-    const QSize& size = ev->size();
+    const QSize &size = ev->size();
 
     double dw = (double)size.width() / (double)bsize.width();
     double dh = (double)size.height() / (double)bsize.height();
 
     QObjectList buttons = this->children();
-    for (int a=0; a<buttons.count(); a++) {
+    for (int a = 0; a < buttons.count(); a++) {
 
-        VButton *btn = (VButton*)buttons.at(a);
-        const QRect& geom = btn->VRect();
+        VButton *btn = (VButton *)buttons.at(a);
+        const QRect &geom = btn->VRect();
 
         btn->setGeometry((geom.x() * dw), (geom.y() * dh), (geom.width() * dw), (geom.height() * dh));
     }
@@ -121,10 +119,10 @@ void MainWidget::resizeEvent(QResizeEvent *ev)
     updateFont(this->parentWidget()->font());
 }
 
-void MainWidget::updateFont(const QFont& widgetFont)
+void MainWidget::updateFont(const QFont &widgetFont)
 {
     int fontSize = widgetFont.pointSize();
-    if ( parentWidget()->property("autoresfont").toBool() ) {
+    if (parentWidget()->property("autoresfont").toBool()) {
         fontSize = (8.0 / 500.0) * this->parentWidget()->size().width();
     }
     QString buttonStyle = QLatin1String("VButton { font-family:'%1'; font-size: %2px; font-weight:%3; font-style: %4; }").arg(widgetFont.family()).arg(fontSize).arg(widgetFont.bold() ? QLatin1String("bold") : QLatin1String("normal")).arg(widgetFont.italic() ? QLatin1String("italic") : QLatin1String("normal"));

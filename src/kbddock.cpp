@@ -31,15 +31,15 @@
 
 #include <KLocalizedString>
 
-#define DEFAULT_WIDTH 	105
-#define DEFAULT_HEIGHT 	35
+#define DEFAULT_WIDTH   105
+#define DEFAULT_HEIGHT  35
 
-KbdDock::KbdDock(const WId& window) : DragWidget(nullptr), wID(window)
+KbdDock::KbdDock(const WId &window) : DragWidget(nullptr), wID(window)
 {
     setAttribute(Qt::WA_AlwaysShowToolTips);
     setAttribute(Qt::WA_DeleteOnClose, false);
 
-    setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint | Qt::BypassWindowManagerHint );
+    setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
 
     setFocusPolicy(Qt::NoFocus);
 
@@ -55,17 +55,17 @@ KbdDock::~KbdDock()
 
 void KbdDock::paintEvent(QPaintEvent *)
 {
-     QPixmap pix = QGuiApplication::primaryScreen()->grabWindow(wID);
-     QPainter p(this);
-     p.drawPixmap(0, 0, pix.scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    QPixmap pix = QGuiApplication::primaryScreen()->grabWindow(wID);
+    QPainter p(this);
+    p.drawPixmap(0, 0, pix.scaled(width(), height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 }
 
 void KbdDock::mouseReleaseEvent(QMouseEvent *ev)
 {
-     if (dragged && !moved) {
+    if (dragged && !moved) {
         Q_EMIT requestVisibility();
-     }
+    }
 
-     DragWidget::mouseReleaseEvent(ev);
-     raise();
+    DragWidget::mouseReleaseEvent(ev);
+    raise();
 }

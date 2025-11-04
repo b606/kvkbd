@@ -845,17 +845,17 @@ long KeySymConvert::convert(KeySym keysym)
      *     XKB_KEY_Delete, XKB_KEY_KP_Tab, XKB_KEY_KP_Enter,
      *     XKB_KEY_KP_Equal}
      */
-    if ((keysym >= 0xff08 && keysym <= 0xff0b) ||
-        (keysym >= 0xffaa && keysym <= 0xffb9) ||
-         keysym == 0xff80 ||
-         keysym == 0xff0d || keysym == 0xff1b ||
-         keysym == 0xffff || keysym == 0xff89 ||
-         keysym == 0xff8d || keysym == 0xffbd)
+    if (((keysym >= 0xff08) && (keysym <= 0xff0b))
+            || ((keysym >= 0xffaa) && (keysym <= 0xffb9))
+            || (keysym == 0xff80) || (keysym == 0xff0d)
+            || (keysym == 0xff1b) || (keysym == 0xffff)
+            || (keysym == 0xff89) || (keysym == 0xff8d)
+            || (keysym == 0xffbd))
         return keysym & 0x7f;
 
     /* Exclude surrogates: they are invalid in UTF-32. */
     if (keysym >= 0x0100d800 &&
-        keysym <= 0x0100dfff)
+            keysym <= 0x0100dfff)
         return NO_KEYSYM_UNICODE_CONVERSION;
 
     /* also check for directly encoded 24-bit UCS characters

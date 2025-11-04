@@ -138,7 +138,7 @@ void VButton::updateText()
     this->setText(text);
 }
 
-QStringList mytoString(const ButtonText& b)
+QStringList mytoString(const ButtonText &b)
 {
     QStringList lstr;
     for (int i = 0; i < b.count(); i++) lstr.append(QString(b.at(i)));

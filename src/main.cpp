@@ -35,35 +35,34 @@ static QString version = QLatin1String("0.8.1");
 
 void findLoginWindow()
 {
-	unsigned int numkids, i, scrn;
-	Window r, p;
-	Window *kids = nullptr;
-	Window root;
-	Display *dipsy = nullptr;
-	char *win_name = nullptr;
+    unsigned int numkids, i, scrn;
+    Window r, p;
+    Window *kids = nullptr;
+    Window root;
+    Display *dipsy = nullptr;
+    char *win_name = nullptr;
 
-	dipsy = XOpenDisplay(nullptr);
-	if (!dipsy) return;
+    dipsy = XOpenDisplay(nullptr);
+    if (!dipsy) return;
 
-	scrn = DefaultScreen(dipsy);
-	root = RootWindow(dipsy, scrn);
+    scrn = DefaultScreen(dipsy);
+    root = RootWindow(dipsy, scrn);
 
-	XQueryTree(dipsy, root, &r, &p, &kids, &numkids);
+    XQueryTree(dipsy, root, &r, &p, &kids, &numkids);
 
-	for (i = 0; i < numkids;  ++i)
-	{
+    for (i = 0; i < numkids;  ++i) {
         XFetchName(dipsy, kids[i], &win_name);
         QString c(QString::fromLatin1(win_name));
 
         if (c == QLatin1String("kvkbd.login")) {
             long wid = kids[i];
-            XDestroyWindow(dipsy,wid);
+            XDestroyWindow(dipsy, wid);
             XFlush(dipsy);
-            i=numkids;
+            i = numkids;
         }
         XFree(win_name);
-	}
-	XCloseDisplay(dipsy);
+    }
+    XCloseDisplay(dipsy);
 }
 
 int main(int argc, char **argv)
@@ -83,7 +82,7 @@ int main(int argc, char **argv)
 
     QCommandLineParser parser;
     QCommandLineOption loginhelper(QLatin1String("loginhelper"), i18n("Stand alone version for use with KDM or XDM.\n"
-                                     "See Kvkbd Handbook for information on how to use this option."));
+                                   "See Kvkbd Handbook for information on how to use this option."));
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOption(loginhelper);
