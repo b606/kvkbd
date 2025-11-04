@@ -1,5 +1,5 @@
-#include "vbutton.h"
 #include <QDebug>
+#include "vbutton.h"
 
 #define TIMER_INTERVAL_SHORT 40
 #define TIMER_INTERVAL_LONG  200

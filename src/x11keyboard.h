@@ -21,16 +21,17 @@
 #ifndef X11KEYBOARD_H
 #define X11KEYBOARD_H
 
-#include "keysymconvert.h"
-#include <fixx11h.h>
-
-#include "vkeyboard.h"
 
 #include <QObject>
 #include <QTimer>
 #include <QStringList>
 #include <QChar>
 #include <QMap>
+#include <X11/Xlib.h>
+#include <fixx11h.h>
+
+#include "vkeyboard.h"
+#include "keysymconvert.h"
 
 class X11Keyboard : public VKeyboard
 {

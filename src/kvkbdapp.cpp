@@ -19,8 +19,6 @@
  *
  */
 
-#include "kvkbdapp.h"
-
 #include <QDebug>
 #include <QDomDocument>
 #include <QFile>
@@ -42,12 +40,13 @@
 
 #include <KLocalizedString>
 
+#include "kvkbdapp.h"
+#include "x11keyboard.h"
+
 QList<VButton*> modKeys;
 
 #define DEFAULT_WIDTH 	640
 #define DEFAULT_HEIGHT 	210
-
-#include "x11keyboard.h"
 
 void KvkbdApp::initGui(bool loginhelper)
 {

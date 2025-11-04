@@ -18,14 +18,15 @@
  *
  */
 
-#include "x11keyboard.h"
-
 #include <QDebug>
+#include <QDataStream>
 
 #include <QDBusConnection>
-#include <QDataStream>
 #include <QDBusInterface>
 #include <QDBusReply>
+
+// TODO: QNativeInterface::QX11Application (Qt 6.2+)
+// #include <QGuiApplication>
 
 #include <X11/extensions/XTest.h>
 #include <X11/Xlocale.h>
@@ -33,14 +34,15 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xproto.h>
-
 #include <X11/XKBlib.h>
+#include <fixx11h.h>
 
-#include "vbutton.h"
-extern QList<VButton *> modKeys;
-
-#include "kbdlayout.h"
 #include "keysymconvert.h"
+#include "vbutton.h"
+#include "kbdlayout.h"
+#include "x11keyboard.h"
+
+extern QList<VButton *> modKeys;
 
 X11Keyboard::X11Keyboard(QObject *parent): VKeyboard(parent)
 {
