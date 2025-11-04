@@ -147,7 +147,7 @@ QStringList mytoString(const ButtonText& b)
 
 void VButton::sendKey()
 {
-    qDebug() << "keyCode: " << keyCode << ", KSA" << isCaps << isShift << 0 << ", btxt: " << mytoString(mButtonText) ;
+    // qDebug() << "keyCode: " << keyCode << ", KSA" << isCaps << isShift << 0 << ", btxt: " << mytoString(mButtonText) ;
 
     Q_EMIT keyClick(this->keyCode);
 }
