@@ -60,6 +60,7 @@ protected:
     bool queryModKeyState(KeySym keyCode);
     ModifierGroupStateMap groupState;
     QTimer *groupTimer;
+    Display *m_display;
 };
 
 #endif // X11KEYBOARD_H
