@@ -36,8 +36,6 @@
 
 #include "keysymconvert.h"
 
-#define NO_KEYSYM_UNICODE_CONVERSION 0
-
 struct codepair {
     unsigned short keysym;
     unsigned short ucs;

@@ -20,6 +20,8 @@
 
 #include "x11keyboard.h"
 
+#include <QDebug>
+
 #include <QDBusConnection>
 #include <QDataStream>
 #include <QDBusInterface>
@@ -38,6 +40,7 @@
 extern QList<VButton *> modKeys;
 
 #include "kbdlayout.h"
+#include "keysymconvert.h"
 
 X11Keyboard::X11Keyboard(QObject *parent): VKeyboard(parent)
 {
@@ -57,6 +60,7 @@ X11Keyboard::X11Keyboard(QObject *parent): VKeyboard(parent)
 
     groupState.insert(QLatin1String("capslock"), this->queryModKeyState(XK_Caps_Lock));
     groupState.insert(QLatin1String("numlock"), this->queryModKeyState(XK_Num_Lock));
+    groupState.insert(QLatin1String("shitlevel3"), this->queryModKeyState(XK_ISO_Level3_Shift));
 
     connect(groupTimer, SIGNAL(timeout()), this, SLOT(queryModState()));
 }
@@ -154,26 +158,30 @@ bool X11Keyboard::queryModKeyState(KeySym iKey)
 
 void X11Keyboard::queryModState()
 {
-
     bool curr_caps_state = this->queryModKeyState(XK_Caps_Lock);
     bool curr_num_state = this->queryModKeyState(XK_Num_Lock);
 
+    // TODO: find a way to query these modifiers.
+    // XK_ISO_Level3_Shift, XK_Mode_switch, XK_Alt_R
+    bool curr_shift_level3_state = this->queryModKeyState(XK_Alt_R);
+
     bool caps_state = groupState.value(QLatin1String("capslock"));
     bool num_state = groupState.value(QLatin1String("numlock"));
+    bool shift_level3_state = groupState.value(QLatin1String("shitlevel3"));
 
     groupState.insert(QLatin1String("capslock"), curr_caps_state);
     groupState.insert(QLatin1String("numlock"), curr_num_state);
+    groupState.insert(QLatin1String("shitlevel3"), curr_shift_level3_state);
 
-    if (curr_caps_state != caps_state || curr_num_state != num_state) {
-
+    if ((curr_caps_state != caps_state)
+     || (curr_num_state != num_state)
+     || (curr_shift_level3_state != shift_level3_state) ) {
         Q_EMIT groupStateChanged(groupState);
     }
 }
 
 void X11Keyboard::layoutChanged()
 {
-    //std::cerr << "LayoutChanged" << std::endl;
-
     QDBusInterface iface(QLatin1String("org.kde.keyboard"), QLatin1String("/Layouts"), QLatin1String("org.kde.KeyboardLayouts"), QDBusConnection::sessionBus());
 
     QDBusReply<uint> reply = iface.call(QLatin1String("getLayout"));
@@ -186,6 +194,7 @@ void X11Keyboard::layoutChanged()
         Q_EMIT layoutUpdated(0, QLatin1String("us"));
     }
 }
+
 void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText& text)
 {
     if (keyCode==0) {
@@ -197,28 +206,41 @@ void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText& text)
 
     Display *display = XOpenDisplay(nullptr);
 
-    // TODO: get Shift Level 3 text (Alt.Gr / Mod5)
-
-    // TODO: check for NO_SYMBOL
     // layout_index cycles around the first four layouts on X11 (Plasma keyboard kcm can define more layouts)
     KeySym normal = XkbKeycodeToKeysym( display, button_code, layout_index, 0);
+
     KeySym shift  = XkbKeycodeToKeysym( display, button_code, layout_index, 1);
+    if (shift == NO_KEYSYM_UNICODE_CONVERSION) { shift = normal; }
+
+    KeySym normal_L3 = XkbKeycodeToKeysym( display, button_code, layout_index, 2);
+    if (normal_L3 == NO_KEYSYM_UNICODE_CONVERSION) { normal_L3 = normal; }
+
+    KeySym shift_L3  = XkbKeycodeToKeysym( display, button_code, layout_index, 3);
+    if (shift_L3 == NO_KEYSYM_UNICODE_CONVERSION) { shift_L3 = normal_L3; }
 
     long int ret = kconvert.convert(normal);
     long int shiftRet = kconvert.convert(shift);
+    long int ret_L3 = kconvert.convert(normal_L3);
+    long int shiftRet_L3 = kconvert.convert(shift_L3);
 
-    // TODO: process dead key . See /usr/include/X11/keysymdef.h
-    // XK_dead_grave 0xfe50 -> XK_dead_currency 0xfe6f
-    // XK_dead_a 0xfe80 -> XK_dead_hamza 0xfe8d
-    // XK_dead_lowline 0xfe90 -> XK_dead_longsolidusoverlay 0xfe93
+    // TODO: process dead key to generate displayable QChar instead of ' ' for ret in the intervals
+    //    [XK_dead_grave 0xfe50 , XK_dead_currency 0xfe6f]
+    //    [XK_dead_a 0xfe80 , XK_dead_hamza 0xfe8d]
+    //    [XK_dead_lowline 0xfe90 , XK_dead_longsolidusoverlay 0xfe93]
+    // See /usr/include/X11/keysymdef.h
+
     QChar normalText = QChar((uint)ret);
     QChar shiftText = QChar((uint)shiftRet);
+    QChar normalText_L3 = QChar((uint)ret_L3);
+    QChar shiftText_L3 = QChar((uint)shiftRet_L3);
 
     //cout <<  "Normal Text " << normalText.toAscii() << " Shift Text: " << shiftText.toAscii() << std::endl;
 
     text.clear();
     text.append(normalText);
     text.append(shiftText);
+    text.append(normalText_L3);
+    text.append(shiftText_L3);
 
     XCloseDisplay(display);
 }
