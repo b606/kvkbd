@@ -7,6 +7,8 @@
 #ifndef KEYSYM2UCS_H
 #define KEYSYM2UCS_H
 
+#define NO_KEYSYM_UNICODE_CONVERSION 0
+
 #include <X11/X.h>
 
 class KeySymConvert

@@ -1,4 +1,5 @@
 #include "vbutton.h"
+#include <QDebug>
 
 #define TIMER_INTERVAL_SHORT 40
 #define TIMER_INTERVAL_LONG  200
@@ -115,6 +116,8 @@ void VButton::updateText()
 
 void VButton::sendKey()
 {
+    qDebug() << "keyCode: " << keyCode << ", KSA" << isCaps << isShift << 0 << ", btxt: " << mButtonText ;
+
     Q_EMIT keyClick(this->keyCode);
 }
 
