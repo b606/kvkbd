@@ -65,6 +65,19 @@ void MainWidget::textSwitch(bool setShift)
     }
 
 }
+
+void MainWidget::textSwitchLevel3(bool setShiftLevel3)
+{
+    QObjectList buttons = this->children();
+
+    for (int a=0; a<buttons.count(); a++) {
+        VButton *btn = (VButton*)buttons.at(a);
+        btn->setShiftLevel3(setShiftLevel3);
+        btn->updateText();
+    }
+
+}
+
 void MainWidget::updateLayout(int, const QString& layout_name)
 {
     QObjectList buttons = this->children();

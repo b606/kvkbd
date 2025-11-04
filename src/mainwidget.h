@@ -23,6 +23,7 @@ public:
 
 public Q_SLOTS:
     void textSwitch(bool);
+    void textSwitchLevel3(bool);
     void updateLayout(int, const QString&);
     void updateGroupState(const ModifierGroupStateMap&);
     void updateFont(const QFont&);

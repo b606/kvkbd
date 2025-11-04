@@ -75,6 +75,7 @@ protected:
 
 Q_SIGNALS:
     void textSwitch(bool);
+    void textSwitchLevel3(bool);
     void fontUpdated(const QFont& font);
     void startupCompleted();
 };
