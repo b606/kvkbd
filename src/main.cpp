@@ -20,7 +20,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "kvkbdapp.h"
 #include <KAboutData>
 #include <KLocalizedString>
 
@@ -30,6 +29,9 @@
 static QString version = QLatin1String("0.8.1");
 
 #include <X11/Xlib.h>
+#include <fixx11h.h>
+
+#include "kvkbdapp.h"
 
 void findLoginWindow()
 {
