@@ -46,6 +46,10 @@ extern QList<VButton *> modKeys;
 
 X11Keyboard::X11Keyboard(QObject *parent): VKeyboard(parent)
 {
+    // Opening a display every 250ms in queryModKeyState drains X11 resources.
+    m_display = XOpenDisplay(nullptr);
+    assert(m_display != nullptr);
+
     KbdLayout::registerMetaType();
     QString service = QLatin1String("");
     QString path = QLatin1String("/Layouts");
@@ -69,6 +73,7 @@ X11Keyboard::X11Keyboard(QObject *parent): VKeyboard(parent)
 
 X11Keyboard::~X11Keyboard()
 {
+    XCloseDisplay(m_display);
 }
 
 void X11Keyboard::start()
@@ -110,29 +115,27 @@ void X11Keyboard::sendKey(unsigned int keycode)
     Window currentFocus;
     int revertTo;
 
-    Display *display = XOpenDisplay(nullptr);
-    XGetInputFocus(display, &currentFocus, &revertTo);
+    XGetInputFocus(m_display, &currentFocus, &revertTo);
 
     QListIterator<VButton *> itr(modKeys);
     while (itr.hasNext()) {
         VButton *mod = itr.next();
         if (mod->isChecked()) {
-            XTestFakeKeyEvent(display, mod->getKeyCode(), true, 2);
+            XTestFakeKeyEvent(m_display, mod->getKeyCode(), true, 2);
         }
     }
 
-    XTestFakeKeyEvent(display, keycode, true, 2);
-    XTestFakeKeyEvent(display, keycode, false, 2);
+    XTestFakeKeyEvent(m_display, keycode, true, 2);
+    XTestFakeKeyEvent(m_display, keycode, false, 2);
 
     itr.toFront();
     while (itr.hasNext()) {
         VButton *mod = itr.next();
         if (mod->isChecked()) {
-            XTestFakeKeyEvent(display, mod->getKeyCode(), false, 2);
+            XTestFakeKeyEvent(m_display, mod->getKeyCode(), false, 2);
         }
     }
-    XFlush(display);
-    XCloseDisplay(display);
+    XFlush(m_display);
 }
 
 bool X11Keyboard::queryModKeyState(KeySym iKey)
@@ -142,19 +145,16 @@ bool X11Keyboard::queryModKeyState(KeySym iKey)
     int          iDummy3, iDummy4, iDummy5, iDummy6;
     unsigned int iMask;
 
-    Display* display = XOpenDisplay(nullptr);
-
-    XModifierKeymap* map = XGetModifierMapping(display);
-    KeyCode keyCode = XKeysymToKeycode(display, iKey);
+    XModifierKeymap *map = XGetModifierMapping(m_display);
+    KeyCode keyCode = XKeysymToKeycode(m_display, iKey);
     if (keyCode == NoSymbol) return false;
     for (int i = 0; i < 8; ++i) {
         if (map->modifiermap[map->max_keypermod * i] == keyCode) {
             iKeyMask = 1 << i;
         }
     }
-    XQueryPointer(display, DefaultRootWindow(display), &wDummy1, &wDummy2, &iDummy3, &iDummy4, &iDummy5, &iDummy6, &iMask);
+    XQueryPointer(m_display, DefaultRootWindow(m_display), &wDummy1, &wDummy2, &iDummy3, &iDummy4, &iDummy5, &iDummy6, &iMask);
     XFreeModifiermap(map);
-    XCloseDisplay(display);
     return ((iMask & iKeyMask) != 0);
 }
 
@@ -176,8 +176,8 @@ void X11Keyboard::queryModState()
     groupState.insert(QLatin1String("shitlevel3"), curr_shift_level3_state);
 
     if ((curr_caps_state != caps_state)
-     || (curr_num_state != num_state)
-     || (curr_shift_level3_state != shift_level3_state) ) {
+            || (curr_num_state != num_state)
+            || (curr_shift_level3_state != shift_level3_state)) {
         Q_EMIT groupStateChanged(groupState);
     }
 }
@@ -197,28 +197,32 @@ void X11Keyboard::layoutChanged()
     }
 }
 
-void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText& text)
+void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText &text)
 {
-    if (keyCode==0) {
+    if (keyCode == 0) {
         text.clear();
         return;
     }
 
     KeyCode button_code = keyCode;
 
-    Display *display = XOpenDisplay(nullptr);
-
     // layout_index cycles around the first four layouts on X11 (Plasma keyboard kcm can define more layouts)
-    KeySym normal = XkbKeycodeToKeysym( display, button_code, layout_index, 0);
+    KeySym normal = XkbKeycodeToKeysym(m_display, button_code, layout_index, 0);
 
-    KeySym shift  = XkbKeycodeToKeysym( display, button_code, layout_index, 1);
-    if (shift == NO_KEYSYM_UNICODE_CONVERSION) { shift = normal; }
+    KeySym shift  = XkbKeycodeToKeysym(m_display, button_code, layout_index, 1);
+    if (shift == NO_KEYSYM_UNICODE_CONVERSION) {
+        shift = normal;
+    }
 
-    KeySym normal_L3 = XkbKeycodeToKeysym( display, button_code, layout_index, 2);
-    if (normal_L3 == NO_KEYSYM_UNICODE_CONVERSION) { normal_L3 = normal; }
+    KeySym normal_L3 = XkbKeycodeToKeysym(m_display, button_code, layout_index, 2);
+    if (normal_L3 == NO_KEYSYM_UNICODE_CONVERSION) {
+        normal_L3 = normal;
+    }
 
-    KeySym shift_L3  = XkbKeycodeToKeysym( display, button_code, layout_index, 3);
-    if (shift_L3 == NO_KEYSYM_UNICODE_CONVERSION) { shift_L3 = normal_L3; }
+    KeySym shift_L3  = XkbKeycodeToKeysym(m_display, button_code, layout_index, 3);
+    if (shift_L3 == NO_KEYSYM_UNICODE_CONVERSION) {
+        shift_L3 = normal_L3;
+    }
 
     long int ret = kconvert.convert(normal);
     long int shiftRet = kconvert.convert(shift);
@@ -243,6 +247,4 @@ void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText& text)
     text.append(shiftText);
     text.append(normalText_L3);
     text.append(shiftText_L3);
-
-    XCloseDisplay(display);
 }
