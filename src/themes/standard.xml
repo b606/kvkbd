@@ -133,7 +133,7 @@
         <key code="133" width="LMeta" colorGroup="system" label="Win" modifier="1" />
         <key code="64" width="LAlt" label="Alt" modifier="1"/>
         <key code="65" width="Space" name="currentLayout" label=" "/>
-        <key code="108" width="RAlt" label="Alt Gr" modifier="1"/>
+        <key code="108" width="RAlt" label="Alt Gr" action="shiftLevel3Text" modifier="1"/>
         <key code="134" width="RMeta" label="Win" colorGroup="system" modifier="1"/>
         <key code="135" width="RApp" label="Prop" colorGroup="application" modifier="1"/>
         <key code="105" width="RCtrl" label="Ctrl" modifier="1"/>
