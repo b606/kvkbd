@@ -138,16 +138,21 @@ void VButton::updateText()
     this->setText(text);
 }
 
-QStringList mytoString(const ButtonText &b)
+QString VButton::toString()
 {
-    QStringList lstr;
-    for (int i = 0; i < b.count(); i++) lstr.append(QString(b.at(i)));
-    return lstr;
+    QString mstr;
+    mstr.append(QStringLiteral("{keyCode:"));
+    mstr.append(QString("0x%1(%2), ").arg(keyCode, 2, 16,QChar(u'0')).arg(keyCode));
+    mstr.append(QString("mods(caps,shift,alt-gr): %1 %2 %3, ").arg(isCaps, 0, 2).arg(isShift, 0, 2).arg(isShiftLevel3, 0, 2));
+    mstr.append(QString("chars: ( "));
+    for (int i = 0; i < mButtonText.count(); i++) mstr.append(QString("%1 ").arg(mButtonText.at(i)));
+    mstr.append(QString(")}"));
+    return mstr;
 }
 
 void VButton::sendKey()
 {
-    // qDebug() << "keyCode: " << keyCode << ", KSA" << isCaps << isShift << 0 << ", btxt: " << mytoString(mButtonText) ;
+    // qDebug() << this->toString();
 
     Q_EMIT keyClick(this->keyCode);
 }
