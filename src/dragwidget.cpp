@@ -23,6 +23,8 @@ void DragWidget::blurBackground(bool blurEnabled)
     this->setProperty("blurBackground", QVariant(blurEnabled));
 
     Display *dpy = XOpenDisplay(nullptr);
+    assert(dpy != nullptr);
+
     Atom net_wm_blur_region = XInternAtom(dpy, "_KDE_NET_WM_BLUR_BEHIND_REGION", False);
 
     if (blurEnabled) {
@@ -31,8 +33,8 @@ void DragWidget::blurBackground(bool blurEnabled)
         XDeleteProperty(dpy, this->winId(), net_wm_blur_region);
     }
 
-    repaint();
     XCloseDisplay(dpy);
+    repaint();
 }
 void DragWidget::setLocked(bool locked)
 {
