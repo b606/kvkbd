@@ -112,7 +112,7 @@ void MainWidget::updateFont(const QFont& widgetFont)
 {
     int fontSize = widgetFont.pointSize();
     if ( parentWidget()->property("autoresfont").toBool() ) {
-        fontSize = (8.0 / 500.0) * this->parentWidget()->size().width();
+        fontSize = (fontSize / 500.0) * this->parentWidget()->size().width();
     }
     QString buttonStyle = QLatin1String("VButton { font-family:'%1'; font-size: %2px; font-weight:%3; font-style: %4; }").arg(widgetFont.family()).arg(fontSize).arg(widgetFont.bold() ? QLatin1String("bold") : QLatin1String("normal")).arg(widgetFont.italic() ? QLatin1String("italic") : QLatin1String("normal"));
     this->setStyleSheet(buttonStyle);
