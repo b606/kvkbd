@@ -25,7 +25,6 @@
 #include <QObject>
 #include <QTimer>
 #include <QStringList>
-#include <QChar>
 #include <QMap>
 #include <X11/Xlib.h>
 #include <fixx11h.h>
