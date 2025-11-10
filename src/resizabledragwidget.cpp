@@ -25,6 +25,7 @@
 #include <QPainter>
 
 #include <QMouseEvent>
+#include <QStylePainter>
 
 ResizableDragWidget::ResizableDragWidget(QWidget *parent) :
     DragWidget(parent), doResize(false)
@@ -75,7 +76,7 @@ void ResizableDragWidget::paintEvent(QPaintEvent *ev)
 {
     DragWidget::paintEvent(ev);
 
-    QPainter p(this);
+    QStylePainter p(this);
 
     for (int a = 0; a < 20; a += 4) {
 
