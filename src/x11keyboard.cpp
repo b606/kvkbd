@@ -220,26 +220,29 @@ void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText &text)
 
     KeySym shift_L3  = XkbKeycodeToKeysym(m_display, button_code, layout_index, 3);
     if (shift_L3 == NO_KEYSYM_UNICODE_CONVERSION) {
-        shift_L3 = normal_L3;
+        shift_L3 = (normal_L3 == normal) ? shift : normal_L3;
     }
 
-    long int ret = kconvert.convert(normal);
-    long int shiftRet = kconvert.convert(shift);
-    long int ret_L3 = kconvert.convert(normal_L3);
-    long int shiftRet_L3 = kconvert.convert(shift_L3);
+    // int XkbTranslateKeySym (Display *dpy, KeySym *sym_inout, unsigned int mods, char *buf, int nbytes, int *extra_rtrn);
+    char buffer[5]; // max size so far: n = 3
+    unsigned int mods = 0;
+    int extra_rtrn;
 
-    // TODO: process dead key to generate displayable QChar instead of ' ' for ret in the intervals
-    //    [XK_dead_grave 0xfe50 , XK_dead_currency 0xfe6f]
-    //    [XK_dead_a 0xfe80 , XK_dead_hamza 0xfe8d]
-    //    [XK_dead_lowline 0xfe90 , XK_dead_longsolidusoverlay 0xfe93]
-    // See /usr/include/X11/keysymdef.h
+    KeySym xkb = normal;
+    XkbTranslateKeySym(m_display, &xkb, mods, buffer, 5, &extra_rtrn);
+    QString normalText = QString(buffer);
 
-    QChar normalText = QChar((uint)ret);
-    QChar shiftText = QChar((uint)shiftRet);
-    QChar normalText_L3 = QChar((uint)ret_L3);
-    QChar shiftText_L3 = QChar((uint)shiftRet_L3);
+    xkb = shift;
+    XkbTranslateKeySym(m_display, &xkb, mods, buffer, 5, &extra_rtrn);
+    QString shiftText = QString(buffer);
 
-    //cout <<  "Normal Text " << normalText.toAscii() << " Shift Text: " << shiftText.toAscii() << std::endl;
+    xkb = normal_L3;
+    XkbTranslateKeySym(m_display, &xkb, mods, buffer, 5, &extra_rtrn);
+    QString normalText_L3 = QString(buffer);
+
+    xkb = shift_L3;
+    XkbTranslateKeySym(m_display, &xkb, mods, buffer, 5, &extra_rtrn);
+    QString shiftText_L3 = QString(buffer);
 
     text.clear();
     text.append(normalText);

@@ -15,7 +15,6 @@ void MainWidget::updateGroupState(const ModifierGroupStateMap &stateMap)
 {
     QObjectList buttons = this->children();
     ModifierGroupStateMapIterator itr(stateMap);
-    QList<QChar> text;
 
     while (itr.hasNext()) {
         itr.next();

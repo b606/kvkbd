@@ -25,13 +25,12 @@
 #include <QMap>
 #include <QMapIterator>
 #include <QList>
-#include <QChar>
 
 //caps state, numlock state
 typedef QMap<QString, bool> ModifierGroupStateMap;
 typedef QMapIterator<QString, bool> ModifierGroupStateMapIterator;
 //normal text, shift text
-typedef QList<QChar> ButtonText;
+typedef QList<QString> ButtonText;
 
 class VKeyboard : public QObject
 {
