@@ -211,6 +211,14 @@ void KvkbdApp::initGui(bool loginhelper)
 
 KvkbdApp::~KvkbdApp()
 {
+    if (widget != nullptr) {
+        delete widget;
+        widget = nullptr;
+    }
+    if (dock != nullptr) {
+        delete dock;
+        dock = nullptr;
+    }
 }
 
 void KvkbdApp::storeConfig()
