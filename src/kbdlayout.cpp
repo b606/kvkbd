@@ -7,6 +7,13 @@
 #include <QDBusMetaType>
 
 
+KbdLayout::KbdLayout() : QObject()
+{
+    setShortName(QLatin1String(""));
+    setName(QLatin1String(""));
+    setVariantName(QLatin1String(""));
+}
+
 KbdLayout::KbdLayout(const QString &shortName, const QString &name,
                      const QString &variantName) : QObject()
 {

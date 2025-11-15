@@ -226,23 +226,24 @@ void X11Keyboard::textForKeyCode(unsigned int keyCode,  ButtonText &text)
     // int XkbTranslateKeySym (Display *dpy, KeySym *sym_inout, unsigned int mods, char *buf, int nbytes, int *extra_rtrn);
     char buffer[5]; // max size so far: n = 3
     unsigned int mods = 0;
+    int n;
     int extra_rtrn;
 
     KeySym xkb = normal;
-    XkbTranslateKeySym(m_display, &xkb, mods, buffer, 5, &extra_rtrn);
-    QString normalText = QString(buffer);
+    n = XkbTranslateKeySym(m_display, &xkb, mods, buffer, 5, &extra_rtrn);
+    QString normalText = QString().fromLocal8Bit(buffer, n);
 
     xkb = shift;
-    XkbTranslateKeySym(m_display, &xkb, mods, buffer, 5, &extra_rtrn);
-    QString shiftText = QString(buffer);
+    n = XkbTranslateKeySym(m_display, &xkb, mods, buffer, 5, &extra_rtrn);
+    QString shiftText = QString().fromLocal8Bit(buffer, n);
 
     xkb = normal_L3;
-    XkbTranslateKeySym(m_display, &xkb, mods, buffer, 5, &extra_rtrn);
-    QString normalText_L3 = QString(buffer);
+    n = XkbTranslateKeySym(m_display, &xkb, mods, buffer, 5, &extra_rtrn);
+    QString normalText_L3 = QString().fromLocal8Bit(buffer, n);
 
     xkb = shift_L3;
-    XkbTranslateKeySym(m_display, &xkb, mods, buffer, 5, &extra_rtrn);
-    QString shiftText_L3 = QString(buffer);
+    n = XkbTranslateKeySym(m_display, &xkb, mods, buffer, 5, &extra_rtrn);
+    QString shiftText_L3 = QString().fromLocal8Bit(buffer, n);
 
     text.clear();
     text.append(normalText);

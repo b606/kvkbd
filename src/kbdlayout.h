@@ -25,8 +25,10 @@ public:
     /**
      * Default constructor
      */
-    KbdLayout(const QString& shortName = "fr", const QString& name = "fr",
-              const QString& variantName = "Français");
+    KbdLayout();
+
+    explicit KbdLayout(const QString& shortName, const QString& name,
+              const QString& variantName);
 
     /**
      * Copy constructor

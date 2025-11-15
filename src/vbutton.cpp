@@ -140,13 +140,14 @@ void VButton::updateText()
 
 QString VButton::toString()
 {
-    QString mstr;
-    mstr.append(QStringLiteral("{keyCode:"));
-    mstr.append(QString("0x%1(%2), ").arg(keyCode, 2, 16,QChar(u'0')).arg(keyCode));
-    mstr.append(QString("mods(caps,shift,alt-gr): %1 %2 %3, ").arg(isCaps, 0, 2).arg(isShift, 0, 2).arg(isShiftLevel3, 0, 2));
-    mstr.append(QString("chars: ( "));
-    for (int i = 0; i < mButtonText.count(); i++) mstr.append(QString("%1 ").arg(mButtonText.at(i)));
-    mstr.append(QString(")}"));
+    QString mstr = QLatin1String("{keyCode:");
+    QString code = QLatin1String("0x%1(%2), ");
+    mstr.append(code.arg(keyCode, 2, 16, QChar(u'0')).arg(keyCode));
+    QString mods = QLatin1String("mods(caps,shift,alt-gr): %1 %2 %3, ");
+    mstr.append(mods.arg(isCaps, 0, 2).arg(isShift, 0, 2).arg(isShiftLevel3, 0, 2));
+    mstr.append(QLatin1String("chars: ( "));
+    for (int i = 0; i < mButtonText.count(); i++) mstr.append(QLatin1String("%1 ").arg(mButtonText.at(i)));
+    mstr.append(QLatin1String(")}"));
     return mstr;
 }
 
